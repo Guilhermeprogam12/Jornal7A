@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornal 7°A - Portal Futurista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-day {
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover {
+            background-color: #3b82f6;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .active-day {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .nav-link:hover {
+            color: #3b82f6;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .school-placeholder {
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.5rem;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .admin-panel.open {
+            right: 0;
+        }
+        
+        .admin-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .admin-overlay.active {
+            display: block;
+        }
+        
+        .timetable-cell {
+            min-height: 60px;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+        }
+        
+        .timetable-cell:hover {
+            background-color: #f8fafc;
+        }
+        
+        .timetable-header {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 640px) {
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Admin Button -->
+    <button id="adminBtn" class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white font-bold w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-50">
+        <i class="fas fa-cog text-xl"></i>
+    </button>
+    
+    <!-- Admin Overlay -->
+    <div id="adminOverlay" class="admin-overlay"></div>
+    
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Painel Administrativo</h2>
+                <button id="closeAdminPanel" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="mb-8">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                        Usuário
+                    </label>
+                    <input id="username" type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                        Senha
+                    </label>
+                    <input id="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Entrar
+                </button>
+            </div>
+            
+            <!-- Admin Content (hidden by default) -->
+            <div id="adminContent" class="hidden">
+                <!-- Tabs Navigation -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button data-tab="posts" class="tab-btn py-2 px-4 font-medium text-blue-600 border-b-2 border-blue-600">Notícias</button>
+                    <button data-tab="calendar" class="tab-btn py-2 px-4 font-medium text-gray-500 hover:text-gray-700">Calendário</button>
+                    <button data-tab="timetable" class="tab-btn py-2 px-4 font-medium text-gray-500 hover:text-gray-700">Horários</button>
+                </div>
+                
+                <!-- Posts Tab -->
+                <div id="postsTab" class="tab-content">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Gerenciar Notícias</h3>
+                    
+                    <div class="mb-6">
+                        <button id="addPostBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4">
+                            <i class="fas fa-plus mr-2"></i> Adicionar Notícia
+                        </button>
+                        
+                        <div id="postForm" class="bg-gray-50 p-4 rounded-lg mb-6 hidden">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Título</label>
+                                <input type="text" id="postTitle" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Categoria</label>
+                                <select id="postCategory" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    <option value="Professores">Professores</option>
+                                    <option value="Administração">Administração</option>
+                                    <option value="Democracia">Democracia</option>
+                                    <option value="Liderança">Liderança</option>
+                                    <option value="Eventos">Eventos</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Data</label>
+                                <input type="date" id="postDate" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Conteúdo</label>
+                                <textarea id="postContent" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                            </div>
+                            <div class="flex justify-end space-x-2">
+                                <button id="cancelPostBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                                    Cancelar
+                                </button>
+                                <button id="savePostBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Salvar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="divide-y divide-gray-200">
+                                <!-- Posts will be listed here -->
+                                <div class="p-4 hover:bg-gray-50 flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-medium">Professora Rita Herrera é a representante do 7°A Desidério</h4>
+                                        <p class="text-sm text-gray-500">Professores • 10/02/2025</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50 flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-medium">Ana Maria Alvares anunciada como nova diretora</h4>
+                                        <p class="text-sm text-gray-500">Administração • 14/02/2025</p>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Calendar Tab -->
+                <div id="calendarTab" class="tab-content hidden">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Gerenciar Calendário</h3>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Selecione o Mês</label>
+                        <select id="calendarMonth" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6" selected>Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Tipo de Evento</label>
+                        <select id="eventType" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="prova">Prova</option>
+                            <option value="simulado">Simulado</option>
+                            <option value="evento">Evento Escolar</option>
+                            <option value="feriado">Feriado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Selecione os Dias</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="16">16</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="17">17</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="18">18</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="23">23</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="24">24</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="25">25</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="26">26</button>
+                            <button class="day-selector px-3 py-1 bg-gray-200 rounded hover:bg-gray-300" data-day="27">27</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Descrição (opcional)</label>
+                        <input type="text" id="eventDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button id="saveCalendarBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Timetable Tab -->
+                <div id="timetableTab" class="tab-content hidden">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Grade de Horários</h3>
+                    
+                    <div class="mb-4 overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="timetable-header py-2 px-4">Horário</th>
+                                    <th class="timetable-header py-2 px-4">Segunda</th>
+                                    <th class="timetable-header py-2 px-4">Terça</th>
+                                    <th class="timetable-header py-2 px-4">Quarta</th>
+                                    <th class="timetable-header py-2 px-4">Quinta</th>
+                                    <th class="timetable-header py-2 px-4">Sexta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="timetable-cell font-medium">1° Aula</td>
+                                    <td class="timetable-cell">Arte</td>
+                                    <td class="timetable-cell">Português</td>
+                                    <td class="timetable-cell">Geografia</td>
+                                    <td class="timetable-cell">Português</td>
+                                    <td class="timetable-cell">Inglês</td>
+                                </tr>
+                                <tr>
+                                    <td class="timetable-cell font-medium">2° Aula</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">Geografia</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">Artes</td>
+                                </tr>
+                                <tr>
+                                    <td class="timetable-cell font-medium">3° Aula</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">História</td>
+                                    <td class="timetable-cell">Matemática</td>
+                                    <td class="timetable-cell">Ciências</td>
+                                </tr>
+                                <tr>
+                                    <td class="timetable-cell font-medium">4° Aula</td>
+                                    <td class="timetable-cell">Português</td>
+                                    <td class="timetable-cell">Geografia</td>
+                                    <td class="timetable-cell">Português</td>
+                                    <td class="timetable-cell">Ciências</td>
+                                    <td class="timetable-cell">Português</td>
+                                </tr>
+                                <tr>
+                                    <td class="timetable-cell font-medium">5° Aula</td>
+                                    <td class="timetable-cell">História</td>
+                                    <td class="timetable-cell">Inglês</td>
+                                    <td class="timetable-cell">Português</td>
+                                    <td class="timetable-cell">Ciências</td>
+                                    <td class="timetable-cell">História</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button id="saveTimetableBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Salvar Grade
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="gradient-bg text-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="relative">
+                        <i class="fas fa-newspaper text-3xl mr-3 text-cyan-400"></i>
+                        <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-pink-500 animate-pulse"></span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold font-[Orbitron] tracking-wide">JORNAL 7°A</h1>
+                        <p class="text-sm md:text-base opacity-90 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500">
+                            PORTAL DIGITAL DA TURMA • 2025
+                        </p>
+                    </div>
+                </div>
+                <nav class="flex space-x-1 md:space-x-2">
+                    <a href="#" class="nav-link px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all border border-transparent hover:border-indigo-400">
+                        <span class="text-cyan-400">[</span> Início <span class="text-pink-400">]</span>
+                    </a>
+                    <a href="#noticias" class="nav-link px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all border border-transparent hover:border-indigo-400">
+                        <span class="text-cyan-400">[</span> Notícias <span class="text-pink-400">]</span>
+                    </a>
+                    <a href="#calendario" class="nav-link px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all border border-transparent hover:border-indigo-400">
+                        <span class="text-cyan-400">[</span> Avaliações <span class="text-pink-400">]</span>
+                    </a>
+                    <a href="#horarios" class="nav-link px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all border border-transparent hover:border-indigo-400">
+                        <span class="text-cyan-400">[</span> Horários <span class="text-pink-400">]</span>
+                    </a>
+                    <a href="#sobre" class="nav-link px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10 transition-all border border-transparent hover:border-indigo-400">
+                        <span class="text-cyan-400">[</span> Sobre <span class="text-pink-400">]</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-12 md:py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">Bem-vindo ao Jornal 7°A</h2>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate-fade-in" style="animation-delay: 0.2s;">O espaço oficial para notícias, eventos e informações da nossa turma</p>
+            <div class="animate-fade-in" style="animation-delay: 0.4s;">
+                <button class="bg-white text-blue-600 font-bold px-6 py-3 rounded-full hover:bg-gray-100 transition mr-3">
+                    <i class="fas fa-book-open mr-2"></i> Últimas Notícias
+                </button>
+                <button class="border-2 border-white text-white font-bold px-6 py-3 rounded-full hover:bg-blue-700 transition">
+                    <i class="fas fa-calendar-alt mr-2"></i> Ver Calendário
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        <!-- Notícias Section -->
+        <section id="noticias" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-blue-500 pb-2 inline-block">Últimas Notícias</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Post 1 -->
+                <article class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden post-card transition-all duration-300 hover:border-indigo-500 hover:shadow-[0_0_20px_-5px_rgba(99,102,241,0.4)]">
+                    <div class="school-placeholder w-full h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <div class="relative">
+                            <i class="fas fa-school text-4xl text-cyan-400"></i>
+                            <div class="absolute -inset-4 border border-cyan-400/30 rounded-full animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Professores</span>
+                            <span class="mx-2">•</span>
+                            <span>10 de Fevereiro, 2025</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">Professora Rita Herrera é a representante do 7°A Desidério</h3>
+                        <p class="text-gray-600 mb-4">A professora Rita Herrera foi oficialmente anunciada como a professora representante da nossa turma, o 7°A Desidério. Com vasta experiência, ela trará novas perspectivas para nosso aprendizado.</p>
+                    </div>
+                </article>
+                
+                <!-- Post 2 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden post-card transition duration-300">
+                    <div class="school-placeholder w-full h-48">
+                        <i class="fas fa-chalkboard-teacher text-4xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Administração</span>
+                            <span class="mx-2">•</span>
+                            <span>14 de Fevereiro, 2025</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">Ana Maria Alvares anunciada como nova diretora</h3>
+                        <p class="text-gray-600 mb-4">A partir do dia 14 de fevereiro, Ana Maria Alvares assumiu oficialmente o cargo de diretora da nossa escola. A comunidade escolar recebe com entusiasmo essa nova liderança.</p>
+                    </div>
+                </article>
+                
+                <!-- Post 3 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden post-card transition duration-300">
+                    <div class="school-placeholder w-full h-48">
+                        <i class="fas fa-users text-4xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Democracia</span>
+                            <span class="mx-2">•</span>
+                            <span>5 de Março, 2025</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">Conselho de Classe elege representantes</h3>
+                        <p class="text-gray-600 mb-4">Em assembleia democrática, foram eleitos os representantes da turma: Guilherme Lucas, Alice Sarah e Lavinia Zamoner como líderes, e Isac Felipe e Matheus Kenji como suplentes.</p>
+                    </div>
+                </article>
+
+                <!-- Post 4 -->
+                <article class="bg-white rounded-lg shadow-md overflow-hidden post-card transition duration-300">
+                    <div class="school-placeholder w-full h-48">
+                        <i class="fas fa-user-friends text-4xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Liderança</span>
+                            <span class="mx-2">•</span>
+                            <span>10 de Março, 2025</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-gray-800">Eleição define líderes e vice-líderes de sala</h3>
+                        <p class="text-gray-600 mb-4">Em processo democrático, a turma elegeu Alice Sarah e Agatha Carolina como líderes de sala, e Isac Felipe dos Santos Silva e Maria Paula Toth como vice-líderes. Parabéns aos eleitos!</p>
+                    </div>
+                </article>
+            </div>
+            
+        </section>
+        
+        <!-- Calendário Avaliativo Section -->
+        <section id="calendario" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 font-[Orbitron] tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500 inline-block">
+                <span class="text-gray-400">[</span> DATAS AVALIATIVAS <span class="text-gray-400">]</span>
+            </h2>
+            
+            <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden backdrop-blur-sm">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800">Junho 2025</h3>
+                        <div class="flex space-x-2">
+                            <button class="prev-month p-2 rounded-full hover:bg-gray-100" title="Mês anterior">
+                                <i class="fas fa-chevron-left text-gray-600"></i>
+                            </button>
+                            <button class="next-month p-2 rounded-full hover:bg-gray-100" title="Próximo mês">
+                                <i class="fas fa-chevron-right text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-2 mb-4">
+                        <div class="text-center font-medium text-gray-500 py-2">Dom</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Seg</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Ter</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Qua</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Qui</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Sex</div>
+                        <div class="text-center font-medium text-gray-500 py-2">Sáb</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-2">
+                        <!-- Dias do mês (Junho 2025 começa no domingo) -->
+                        <div class="calendar-day text-center py-2 rounded-full">
+                            <div>1</div>
+                            <div class="text-xs">Dom</div>
+                        </div>
+                        <div class="calendar-day text-center py-2 rounded-full">2</div>
+                        <div class="calendar-day text-center py-2 rounded-full">3</div>
+                        <div class="calendar-day text-center py-2 rounded-full">4</div>
+                        <div class="calendar-day text-center py-2 rounded-full">5</div>
+                        <div class="calendar-day text-center py-2 rounded-full">6</div>
+                        <div class="calendar-day text-center py-2 rounded-full">7</div>
+                        
+                        <!-- Segunda semana -->
+                        <div class="calendar-day text-center py-2 rounded-full">8</div>
+                        <div class="calendar-day text-center py-2 rounded-full">9</div>
+                        <div class="calendar-day text-center py-2 rounded-full">10</div>
+                        <div class="calendar-day text-center py-2 rounded-full">11</div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>12</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>13</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day text-center py-2 rounded-full">14</div>
+                        
+                        <!-- Terceira semana -->
+                        <div class="calendar-day text-center py-2 rounded-full">15</div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>16</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>17</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>18</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day text-center py-2 rounded-full">19</div>
+                        <div class="calendar-day text-center py-2 rounded-full">20</div>
+                        <div class="calendar-day text-center py-2 rounded-full">21</div>
+                        
+                        <!-- Quarta semana -->
+                        <div class="calendar-day text-center py-2 rounded-full">22</div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>23</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>24</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>25</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>26</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day bg-red-100 text-center py-2 rounded-full font-bold border border-red-200">
+                            <div>27</div>
+                            <div class="text-xs text-red-600">Prova</div>
+                        </div>
+                        <div class="calendar-day text-center py-2 rounded-full">28</div>
+                        
+                        <!-- Quinta semana -->
+                        <div class="calendar-day text-center py-2 rounded-full">29</div>
+                        <div class="calendar-day bg-yellow-100 text-center py-2 rounded-full font-bold border border-yellow-200">
+                            <div>30</div>
+                            <div class="text-xs text-yellow-600">Festa Junina</div>
+                        </div>
+                        <div class="calendar-day text-center py-2 rounded-full">1</div>
+                        <div class="calendar-day text-center py-2 rounded-full">2</div>
+                        <div class="calendar-day text-center py-2 rounded-full">3</div>
+                        <div class="calendar-day text-center py-2 rounded-full">4</div>
+                        <div class="calendar-day text-center py-2 rounded-full">5</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                    <h4 class="font-semibold text-gray-800 mb-2">Legenda:</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-red-600 mr-2"></div>
+                            <span class="text-sm text-gray-600">Provas</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-blue-600 mr-2"></div>
+                            <span class="text-sm text-gray-600">Simulados</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-green-600 mr-2"></div>
+                            <span class="text-sm text-gray-600">Feriados</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                            <span class="text-sm text-gray-600">Eventos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Month Navigation -->
+            <div class="flex justify-center space-x-4 mt-8 mb-8">
+                <button class="month-nav bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded" data-month="5">Maio</button>
+                <button class="month-nav bg-blue-600 text-white px-4 py-2 rounded" data-month="6">Junho</button>
+                <button class="month-nav bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded" data-month="7">Julho</button>
+                <button class="month-nav bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded" data-month="8">Agosto</button>
+            </div>
+
+            <div id="calendarHighlights" class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded hidden">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-blue-800">Datas Avaliativas Confirmadas</h3>
+                        <div class="mt-2 text-sm text-blue-700">
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><span class="text-red-600">12/06 - Prova</span></li>
+                                <li><span class="text-red-600">13/06 - Prova</span></li>
+                                <li><span class="text-red-600">16/06 - Prova</span></li>
+                                <li><span class="text-red-600">17/06 - Prova</span></li>
+                                <li><span class="text-red-600">18/06 - Prova</span></li>
+                                <li><span class="text-red-600">23/06 - Prova</span></li>
+                                <li><span class="text-red-600">24/06 - Prova</span></li>
+                                <li><span class="text-red-600">25/06 - Prova</span></li>
+                                <li><span class="text-red-600">26/06 - Prova</span></li>
+                                <li><span class="text-red-600">27/06 - Prova</span></li>
+                                <li><span class="text-yellow-600">30/06 - Festa Junina</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Horários Section -->
+        <section id="horarios" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-blue-500 pb-2 inline-block">Grade de Horários</h2>
+            
+            <div class="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden backdrop-blur-sm">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full border border-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="timetable-header py-3 px-4">Horário</th>
+                                <th class="timetable-header py-3 px-4">Segunda</th>
+                                <th class="timetable-header py-3 px-4">Terça</th>
+                                <th class="timetable-header py-3 px-4">Quarta</th>
+                                <th class="timetable-header py-3 px-4">Quinta</th>
+                                <th class="timetable-header py-3 px-4">Sexta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="timetable-cell font-medium py-3 px-4">1° Aula</td>
+                                <td class="timetable-cell py-3 px-4">Arte</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                                <td class="timetable-cell py-3 px-4">Geografia</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                                <td class="timetable-cell py-3 px-4">Inglês</td>
+                            </tr>
+                            <tr>
+                                <td class="timetable-cell font-medium py-3 px-4">2° Aula</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">Geografia</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">Artes</td>
+                            </tr>
+                            <tr>
+                                <td class="timetable-cell font-medium py-3 px-4">3° Aula</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">História</td>
+                                <td class="timetable-cell py-3 px-4">Matemática</td>
+                                <td class="timetable-cell py-3 px-4">Ciências</td>
+                            </tr>
+                            <tr>
+                                <td class="timetable-cell font-medium py-3 px-4">4° Aula</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                                <td class="timetable-cell py-3 px-4">Geografia</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                                <td class="timetable-cell py-3 px-4">Ciências</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                            </tr>
+                            <tr>
+                                <td class="timetable-cell font-medium py-3 px-4">5° Aula</td>
+                                <td class="timetable-cell py-3 px-4">História</td>
+                                <td class="timetable-cell py-3 px-4">Inglês</td>
+                                <td class="timetable-cell py-3 px-4">Português</td>
+                                <td class="timetable-cell py-3 px-4">Ciências</td>
+                                <td class="timetable-cell py-3 px-4">História</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sobre Section -->
+        <section id="sobre" class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-blue-500 pb-2 inline-block">Sobre o Jornal 7°A</h2>
+            
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/3">
+                        <div class="school-placeholder w-full h-full min-h-64">
+                            <i class="fas fa-school text-4xl"></i>
+                        </div>
+                    </div>
+                    <div class="p-8 md:w-2/3">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Nossa História</h3>
+                        <p class="text-gray-600 mb-4">O Jornal 7°A foi criado em 2025 como uma evolução do antigo "Jornal dos A", com o objetivo de manter toda a turma informada sobre os acontecimentos escolares, datas importantes e eventos da nossa classe.</p>
+                        <p class="text-gray-600 mb-6">Nosso jornal é produzido colaborativamente pelos alunos, com a supervisão dos professores, and serves as a space to share news, study tips and memorable moments from our school journey.</p>
+                        
+                        <h4 class="text-xl font-semibold text-gray-800 mb-3">Nossa Missão</h4>
+                        <p class="text-gray-600 mb-4">Informar, unir e representar a turma 7°A, criando um canal de comunicação eficiente e um registro das nossas memórias escolares.</p>
+                        
+                        <div class="mt-6">
+                            <h4 class="text-lg font-medium text-gray-800 mb-2">Equipe Editorial</h4>
+                            <div class="flex flex-wrap gap-3">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Repórteres: 0 alunos</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Editores: 2 alunos</span>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Designers: 1 aluno</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Professores Orientadores: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Newsletter -->
+    <section class="bg-gray-100 py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Receba as novidades por e-mail</h2>
+                <p class="text-gray-600 mb-6">Inscreva-se para receber atualizações do Jornal 7°A diretamente na sua caixa de entrada.</p>
+                
+                <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                    <input type="email" placeholder="Seu melhor e-mail" class="flex-grow px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg transition whitespace-nowrap">
+                        Inscrever-se
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Jornal 7°A</h3>
+                    <p class="text-gray-400">O blog oficial da turma 7°A desde 2025, anteriormente conhecido como "Jornal dos A".</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Início</a></li>
+                        <li><a href="#noticias" class="text-gray-400 hover:text-white transition">Notícias</a></li>
+                        <li><a href="#calendario" class="text-gray-400 hover:text-white transition">Datas Avaliativas</a></li>
+                        <li><a href="#horarios" class="text-gray-400 hover:text-white transition">Horários</a></li>
+                        <li><a href="#sobre" class="text-gray-400 hover:text-white transition">Sobre</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contato</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>desiderio.soosa@gmail.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>(16) 99271-9558</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Av. Nossa Senhora Aparecida 2685, Sertãozinho SP - Sala 04</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+                <p>© 2025 Jornal 7°A. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple script to highlight current day in calendar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Admin Panel Toggle
+            const adminBtn = document.getElementById('adminBtn');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminOverlay = document.getElementById('adminOverlay');
+            const closeAdminPanel = document.getElementById('closeAdminPanel');
+
+            adminBtn.addEventListener('click', () => {
+                adminPanel.classList.add('open');
+                adminOverlay.classList.add('active');
+            });
+
+            closeAdminPanel.addEventListener('click', () => {
+                adminPanel.classList.remove('open');
+                adminOverlay.classList.remove('active');
+            });
+
+            adminOverlay.addEventListener('click', () => {
+                adminPanel.classList.remove('open');
+                adminOverlay.classList.remove('active');
+            });
+
+            // Highlight navigation link based on scroll position
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', function() {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (pageYOffset >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('bg-blue-700');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('bg-blue-700');
+                    }
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Calendar Navigation and Event Coloring
+            const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                              'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            
+            function updateCalendar(month) {
+                document.querySelector('h3.text-xl.font-semibold').textContent = `${monthNames[month-1]} 2025`;
+                
+                // Reset all days
+                document.querySelectorAll('.calendar-day').forEach(day => {
+                    day.classList.remove('bg-red-100', 'border-red-200', 'text-red-600',
+                                       'bg-blue-100', 'border-blue-200', 'text-blue-600',
+                                       'bg-green-100', 'border-green-200', 'text-green-600',
+                                       'bg-yellow-100', 'border-yellow-200', 'text-yellow-600');
+                    day.querySelector('.text-xs')?.remove();
+                });
+                
+                // Add events only for June (month 6)
+                if (month === 6) { // Junho
+                    const testDays = [12, 13, 16, 17, 18, 23, 24, 25, 26, 27]; // Provas (vermelho)
+                    const eventDay = 30; // Evento Festa Junina (amarelo)
+                    
+                    testDays.forEach(day => {
+                        const dayEl = document.querySelector(`.calendar-day div:contains("${day}")`)?.parentElement;
+                        if (dayEl) {
+                            dayEl.classList.add('bg-red-100', 'border-red-200');
+                            const note = document.createElement('div');
+                            note.className = 'text-xs text-red-600';
+                            note.textContent = 'Prova';
+                            dayEl.appendChild(note);
+                        }
+                    });
+                    
+                    const dayEl = document.querySelector(`.calendar-day div:contains("${eventDay}")`)?.parentElement;
+                    if (dayEl) {
+                        dayEl.classList.add('bg-yellow-100', 'border-yellow-200');
+                        const note = document.createElement('div');
+                        note.className = 'text-xs text-yellow-600';
+                        note.textContent = 'Festa Junina';
+                        dayEl.appendChild(note);
+                    }
+                }
+                
+                // Update month navigation buttons
+                document.querySelectorAll('.month-nav').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+                    if (parseInt(btn.dataset.month) === month) {
+                        btn.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+                        btn.classList.add('bg-blue-600', 'text-white');
+                    }
+                });
+            }
+            
+            // Initialize with current month (June = 6)
+            let currentMonth = 6;
+            updateCalendar(currentMonth);
+            
+            // Month navigation buttons
+            document.querySelectorAll('.month-nav').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentMonth = parseInt(this.dataset.month);
+                    updateCalendar(currentMonth);
+                    
+                    const highlightsDiv = document.getElementById('calendarHighlights');
+                    if (currentMonth === 6) {
+                        highlightsDiv.classList.remove('hidden');
+                    } else {
+                        highlightsDiv.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Calendar arrow navigation
+            document.querySelector('.prev-month').addEventListener('click', () => {
+                currentMonth = currentMonth > 1 ? currentMonth - 1 : 12;
+                updateCalendar(currentMonth);
+            });
+            
+            document.querySelector('.next-month').addEventListener('click', () => {
+                currentMonth = currentMonth < 12 ? currentMonth + 1 : 1;
+                updateCalendar(currentMonth);
+            });
+
+            // Enhanced Admin Panel Functionality
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Test credentials
+                const validCredentials = [
+                    {user: 'Guilhermedev12', pass: '2401'},
+                    {user: 'Alice1205', pass: '12052012'},
+                    {user: 'Aghata2905', pass: '29052012'}
+                ];
+                
+                const isValid = validCredentials.some(cred => 
+                    username === cred.user && password === cred.pass
+                );
+                
+                if (isValid) {
+                    loginForm.classList.add('hidden');
+                    adminContent.classList.remove('hidden');
+                } else {
+                    alert('Usuário ou senha incorretos!');
+                }
+            });
+            
+            // Tab functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabBtns.forEach(b => b.classList.remove('text-blue-600', 'border-blue-600'));
+                    tabBtns.forEach(b => b.classList.add('text-gray-500', 'hover:text-gray-700'));
+                    tabContents.forEach(c => c.classList.add('hidden'));
+                    
+                    // Add active class to clicked button
+                    btn.classList.remove('text-gray-500', 'hover:text-gray-700');
+                    btn.classList.add('text-blue-600', 'border-blue-600');
+                    
+                    // Show corresponding content
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(`${tabId}Tab`).classList.remove('hidden');
+                });
+            });
+            
+            // Post form toggle
+            const addPostBtn = document.getElementById('addPostBtn');
+            const postForm = document.getElementById('postForm');
+            const cancelPostBtn = document.getElementById('cancelPostBtn');
+            
+            addPostBtn.addEventListener('click', () => {
+                postForm.classList.remove('hidden');
+            });
+            
+            cancelPostBtn.addEventListener('click', () => {
+                postForm.classList.add('hidden');
+            });
+            
+            // Calendar day selection
+            const daySelectors = document.querySelectorAll('.day-selector');
+            
+            daySelectors.forEach(selector => {
+                selector.addEventListener('click', function() {
+                    this.classList.toggle('bg-gray-200');
+                    this.classList.toggle('bg-blue-600');
+                    this.classList.toggle('text-white');
+                });
+            });
+            
+            // Save buttons (placeholder functionality)
+            const saveButtons = [
+                document.getElementById('savePostBtn'),
+                document.getElementById('saveCalendarBtn'),
+                document.getElementById('saveTimetableBtn')
+            ];
+            
+            saveButtons.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        alert('Alterações salvas com sucesso!');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
