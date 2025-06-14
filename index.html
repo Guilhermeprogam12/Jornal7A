@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Jornal 7°A Desidério</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap');
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%); }
+        .post-card { transition: all 0.3s ease; }
+        .post-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); border-color: #8b5cf6; }
+        .calendar-day { transition: all 0.3s ease; border-radius: 9999px; position: relative; }
+        .calendar-day:hover { background-color: #3b82f6; color: white; transform: scale(1.05); }
+        .day-label { position: absolute; bottom: 2px; left: 0; right: 0; font-size: 0.6rem; font-weight: bold; line-height: 1; }
+        .day-prova { background-color: #fee2e2; color: #991b1b; font-weight: bold; border: 1px solid #fecaca; }
+        .day-prova-dark { background-color: #f87171; color: #ffffff; font-weight: bold; border: 1px solid #ef4444; }
+        .day-evento { background-color: #fef9c3; color: #854d0e; font-weight: bold; border: 1px solid #fef08a; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .admin-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background-color: #ffffff; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: right 0.3s ease; z-index: 1000; overflow-y: auto; color: #1f2937; }
+        @media (min-width: 640px) { .admin-panel { right: -450px; width: 450px; } }
+        .admin-panel.open { right: 0; }
+        .admin-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        .admin-overlay.active { display: block; }
+        .timetable-cell { border: 1px solid #374151; padding: 8px; text-align: center; }
+        .timetable-header { background-color: #4f46e5; color: white; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200">
+
+<button class="fixed bottom-6 right-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-50" id="adminBtn">
+    <i class="fas fa-cog text-2xl"></i>
+</button>
+
+<div class="admin-overlay" id="adminOverlay"></div>
+<div class="admin-panel" id="adminPanel">
+    <div class="p-6">
+        <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-gray-800">Painel Administrativo</h2><button class="text-gray-500 hover:text-gray-700" id="closeAdminPanel"><i class="fas fa-times text-2xl"></i></button></div>
+        <div id="loginForm">
+            <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2">Usuário</label><input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="username" type="text"/></div>
+            <div class="mb-6"><label class="block text-gray-700 text-sm font-bold mb-2">Senha</label><input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700" id="password" type="password"/></div>
+            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" id="loginBtn">Entrar</button>
+        </div>
+        <div class="hidden" id="adminContent">
+            <div class="bg-indigo-50 p-4 rounded-lg mb-6 border border-indigo-200"><h3 class="text-xl font-bold text-gray-800 mb-3" id="formTitle">Adicionar Nova Notícia</h3><input type="hidden" id="postId"/><div class="mb-2"><label class="block text-sm font-bold mb-1 text-gray-700">Título</label><input class="shadow-sm border rounded w-full py-2 px-3 text-gray-700" id="postTitle" type="text"/></div><div class="mb-2"><label class="block text-sm font-bold mb-1 text-gray-700">Categoria</label><input class="shadow-sm border rounded w-full py-2 px-3 text-gray-700" id="postCategory" type="text" placeholder="Ex: Eventos, Provas..."/></div><div class="mb-2"><label class="block text-sm font-bold mb-1 text-gray-700">Data</label><input class="shadow-sm border rounded w-full py-2 px-3 text-gray-700" id="postDate" type="date"/></div><div class="mb-4"><label class="block text-sm font-bold mb-1 text-gray-700">Conteúdo</label><textarea class="shadow-sm border rounded w-full py-2 px-3 text-gray-700" id="postContent" rows="4"></textarea></div><div class="flex justify-end space-x-2"><button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" id="cancelPostBtn">Limpar / Cancelar</button><button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" id="savePostBtn"><i class="fas fa-save mr-2"></i>Salvar Notícia</button></div></div>
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Gerenciar Notícias Existentes</h3>
+            <div id="adminPostList" class="space-y-3 max-h-60 overflow-y-auto pr-2"></div>
+            <div class="mt-8 border-t-4 border-indigo-500 pt-6 bg-green-50 p-4 rounded-lg"><h3 class="text-xl font-bold text-green-800 mb-2">Passo Final: Publicar!</h3><p class="text-sm text-gray-600 mb-4">Após salvar suas alterações, clique no botão abaixo para baixar o arquivo. Depois, envie ele para o GitHub.</p><button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded text-lg" id="exportDataBtn"><i class="fas fa-rocket mr-2"></i> Publicar Alterações (Baixar Arquivo)</button></div>
+        </div>
+    </div>
+</div>
+
+<header class="gradient-bg text-white">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="relative"><i class="fas fa-newspaper text-3xl mr-3 text-cyan-400"></i><span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-pink-500 animate-pulse"></span></div>
+                <div><h1 class="text-xl md:text-2xl font-bold font-[Orbitron] tracking-wide">JORNAL 7°A</h1><p class="text-xs md:text-sm opacity-90">PORTAL DIGITAL DA TURMA</p></div>
+            </div>
+
+            <nav class="hidden md:flex space-x-2">
+                <a class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10" href="#"><span class="text-cyan-400">[</span> Início <span class="text-pink-400">]</span></a>
+                <a class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10" href="#noticias"><span class="text-cyan-400">[</span> Notícias <span class="text-pink-400">]</span></a>
+                <a class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10" href="#calendario"><span class="text-cyan-400">[</span> Avaliações <span class="text-pink-400">]</span></a>
+                <a class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10" href="#horarios"><span class="text-cyan-400">[</span> Horários <span class="text-pink-400">]</span></a>
+                <a class="px-3 py-2 rounded-md text-sm font-medium hover:bg-white/10" href="#sobre"><span class="text-cyan-400">[</span> Sobre <span class="text-pink-400">]</span></a>
+            </nav>
+
+             <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white hover:text-cyan-400 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden">
+        <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10" href="#">Início</a>
+            <a class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10" href="#noticias">Notícias</a>
+            <a class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10" href="#calendario">Avaliações</a>
+            <a class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10" href="#horarios">Horários</a>
+            <a class="block px-3 py-2 rounded-md text-base font-medium hover:bg-white/10" href="#sobre">Sobre</a>
+        </nav>
+    </div>
+</header>
+
+<section class="gradient-bg text-white py-12 md:py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">Bem-vindo ao Jornal 7°A</h2>
+        <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto animate-fade-in" style="animation-delay: 0.2s;">O espaço oficial para notícias, eventos e informações da nossa turma.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style="animation-delay: 0.4s;">
+            <a href="#noticias" class="w-full sm:w-auto bg-white text-blue-600 font-bold px-6 py-3 rounded-full hover:bg-gray-100 transition"><i class="fas fa-book-open mr-2"></i> Últimas Notícias</a>
+            <a href="#calendario" class="w-full sm:w-auto border-2 border-white text-white font-bold px-6 py-3 rounded-full hover:bg-white/10 transition"><i class="fas fa-calendar-alt mr-2"></i> Ver Calendário</a>
+        </div>
+    </div>
+</section>
+
+<main class="container mx-auto px-4 py-8 md:py-12">
+    <section class="mb-16" id="noticias">
+        <h2 class="text-3xl font-bold mb-8 text-slate-100 border-b-2 border-indigo-500 pb-2 inline-block">Últimas Notícias</h2>
+        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <section class="mb-16" id="calendario">
+        <h2 class="text-3xl font-bold mb-8 font-[Orbitron] tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-pink-500 inline-block"><span class="text-gray-400">[</span> DATAS AVALIATIVAS <span class="text-gray-400">]</span></h2>
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden backdrop-blur-sm">
+            <div class="p-4 md:p-6">
+                <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-semibold text-slate-100">Junho 2025</h3></div>
+                <div class="grid grid-cols-7 gap-1 text-center font-medium text-slate-400 mb-2 text-xs sm:text-base"><div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div></div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
+            </div>
+            <div class="bg-slate-900/50 px-4 md:px-6 py-4 border-t border-slate-700">
+                <h4 class="font-semibold text-slate-100 mb-2">Legenda:</h4>
+                <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova mr-2"></div><span>Prova</span></div>
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova-dark mr-2"></div><span>Prova Cancelada</span></div>
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-evento mr-2"></div><span>Evento</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="mb-16" id="horarios">
+        <h2 class="text-3xl font-bold mb-8 text-slate-100 border-b-2 border-indigo-500 pb-2 inline-block">Grade de Horários</h2>
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden backdrop-blur-sm">
+            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b border-slate-700"><tr><th class="timetable-header py-3 px-4">Horário</th><th class="timetable-header py-3 px-4">Segunda</th><th class="timetable-header py-3 px-4">Terça</th><th class="timetable-header py-3 px-4">Quarta</th><th class="timetable-header py-3 px-4">Quinta</th><th class="timetable-header py-3 px-4">Sexta</th></tr></thead><tbody id="timetable-body"></tbody></table></div>
+        </div>
+    </section>
+
+    <section class="mb-16" id="sobre">
+        <img alt="Foto da turma" src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" class="mx-auto rounded-lg shadow-lg mb-8 w-64 h-64 object-cover"/>
+        <div class="text-center max-w-3xl mx-auto">
+            <h3 class="text-2xl font-bold text-slate-100 mb-4">Nossa História</h3>
+            <p class="text-slate-300 mb-4">O Jornal 7°A foi criado em 2025 como uma evolução do antigo "Jornal dos A", com o objetivo de manter toda a turma informada sobre os acontecimentos escolares, datas importantes e eventos da nossa classe.</p>
+            <p class="text-slate-300 mb-6">Nosso jornal é produzido colaborativamente pelos alunos, com a supervisão dos professores, e serve como um espaço para compartilhar notícias e momentos memoráveis da nossa jornada escolar.</p>
+        </div>
+    </section>
+</main>
+
+<section class="bg-slate-800 py-12">
+    <div class="container mx-auto px-4"><div class="max-w-3xl mx-auto text-center"><h2 class="text-2xl md:text-3xl font-bold text-slate-100 mb-2">Receba as novidades por e-mail</h2><p class="text-slate-400 mb-6">Inscreva-se para receber atualizações do Jornal 7°A diretamente na sua caixa de entrada.</p><form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"><input class="flex-grow px-4 py-2 rounded-lg border bg-slate-700 border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white" placeholder="Seu melhor e-mail" type="email"/><button class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2 rounded-lg transition whitespace-nowrap" type="submit">Inscrever-se</button></form></div></div>
+</section>
+
+<footer class="bg-slate-900 border-t border-slate-800 text-white py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            <div><h3 class="text-xl font-bold mb-4">Jornal 7°A</h3><p class="text-slate-400">O blog oficial da turma 7°A desde 2025.</p></div>
+            <div><h3 class="text-lg font-semibold mb-4">Links Rápidos</h3><ul class="space-y-2"><li><a class="text-slate-400 hover:text-white transition" href="#">Início</a></li><li><a class="text-slate-400 hover:text-white transition" href="#noticias">Notícias</a></li><li><a class="text-slate-400 hover:text-white transition" href="#calendario">Datas</a></li><li><a class="text-slate-400 hover:text-white transition" href="#horarios">Horários</a></li><li><a class="text-slate-400 hover:text-white transition" href="#sobre">Sobre</a></li></ul></div>
+            <div><h3 class="text-lg font-semibold mb-4">Contato</h3><ul class="space-y-2 text-slate-400"><li class="flex items-center justify-center md:justify-start"><i class="fas fa-envelope mr-2"></i><span>desiderio.soosa@gmail.com</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-phone mr-2"></i><span>(16) 99271-9558</span></li></ul></div>
+        </div>
+        <div class="border-t border-slate-700 mt-8 pt-6 text-center text-slate-400 text-sm"><p>© 2025 Jornal 7°A. Todos os direitos reservados.</p></div>
+    </div>
+</footer>
+
+<script src="jornal-data.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Seleção de Elementos ---
+    const adminBtn = document.getElementById('adminBtn');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminOverlay = document.getElementById('adminOverlay');
+    const closeAdminPanel = document.getElementById('closeAdminPanel');
+    const loginForm = document.getElementById('loginForm');
+    const adminContent = document.getElementById('adminContent');
+    const loginBtn = document.getElementById('loginBtn');
+    const newsContainer = document.getElementById('news-container');
+    const timetableBody = document.getElementById('timetable-body');
+    const adminPostList = document.getElementById('adminPostList');
+    const savePostBtn = document.getElementById('savePostBtn');
+    const cancelPostBtn = document.getElementById('cancelPostBtn');
+    const exportDataBtn = document.getElementById('exportDataBtn');
+    const formTitle = document.getElementById('formTitle');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // --- Lógica do Menu Mobile ---
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // --- Funções de Renderização ---
+    function renderNews() {
+        newsContainer.innerHTML = '';
+        siteData.noticias.forEach(post => {
+            const postEl = document.createElement('article');
+            postEl.className = 'bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden post-card';
+            postEl.innerHTML = `
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-slate-400 mb-2">
+                        <span class="bg-indigo-500/20 text-indigo-300 text-xs font-medium px-2.5 py-0.5 rounded">${post.category}</span><span class="mx-2">•</span><span>${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-slate-100">${post.title}</h3>
+                    <p class="text-slate-300">${post.content}</p>
+                </div>`;
+            newsContainer.appendChild(postEl);
+        });
+    }
+
+    function renderTimetable() {
+        timetableBody.innerHTML = '';
+        siteData.horarios.forEach(row => {
+            const rowEl = document.createElement('tr');
+            rowEl.className = "hover:bg-slate-800 transition-colors";
+            rowEl.innerHTML = `<td class="timetable-cell font-medium">${row.horario}</td><td class="timetable-cell">${row.segunda}</td><td class="timetable-cell">${row.terca}</td><td class="timetable-cell">${row.quarta}</td><td class="timetable-cell">${row.quinta}</td><td class="timetable-cell">${row.sexta}</td>`;
+            timetableBody.appendChild(rowEl);
+        });
+    }
+    
+    function renderCalendar() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        const month = 5, year = 2025;
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        calendarGrid.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+        for (let day = 1; day <= daysInMonth; day++) {
+            let classes = 'calendar-day text-center py-2 h-10 sm:h-12 flex items-center justify-center text-xs sm:text-base';
+            let label = '';
+            if (day === 13) { classes += ' day-prova-dark'; label = '<div class="day-label">Prova<br>Cancelada</div>'; } 
+            else if ([12, 16, 17, 18, 23, 24, 25, 26, 27].includes(day)) { classes += ' day-prova'; label = '<div class="day-label">Prova</div>'; } 
+            else if (day === 30) { classes += ' day-evento'; label = '<div class="day-label">Festa Junina</div>'; }
+            calendarGrid.insertAdjacentHTML('beforeend', `<div class="${classes}"><div>${day}</div>${label}</div>`);
+        }
+    }
+
+    // --- Lógica do Painel Administrativo ---
+    function toggleAdminPanel(open) {
+        adminPanel.classList.toggle('open', open);
+        adminOverlay.classList.toggle('active', open);
+    }
+    
+    adminBtn.addEventListener('click', () => toggleAdminPanel(true));
+    closeAdminPanel.addEventListener('click', () => toggleAdminPanel(false));
+    adminOverlay.addEventListener('click', () => toggleAdminPanel(false));
+
+    loginBtn.addEventListener('click', () => {
+        const validCredentials = [{user: 'Guilhermedev12', pass: '2401'}, {user: 'Alice1205', pass: '12052012'}, {user: 'Aghata2905', pass: '29052012'}];
+        if (validCredentials.some(cred => cred.user === document.getElementById('username').value && cred.pass === document.getElementById('password').value)) {
+            loginForm.classList.add('hidden');
+            adminContent.classList.remove('hidden');
+            renderAdminPostList();
+            resetPostForm();
+        } else { alert('Usuário ou senha incorretos!'); }
+    });
+
+    function renderAdminPostList() {
+        adminPostList.innerHTML = '';
+        siteData.noticias.slice().reverse().forEach(post => {
+            const postEl = document.createElement('div');
+            postEl.className = 'p-3 hover:bg-gray-100 flex justify-between items-center border rounded';
+            postEl.innerHTML = `<div><h4 class="font-medium">${post.title}</h4><p class="text-sm text-gray-500">${post.category}</p></div><div class="flex space-x-2"><button class="text-blue-600 hover:text-blue-800 p-2 edit-btn" data-id="${post.id}"><i class="fas fa-edit"></i></button><button class="text-red-600 hover:text-red-800 p-2 delete-btn" data-id="${post.id}"><i class="fas fa-trash"></i></button></div>`;
+            adminPostList.appendChild(postEl);
+        });
+    }
+
+    function resetPostForm() {
+        document.getElementById('postId').value = '';
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postCategory').value = '';
+        document.getElementById('postDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('postContent').value = '';
+        formTitle.innerText = 'Adicionar Nova Notícia';
+    }
+
+    savePostBtn.addEventListener('click', () => {
+        const id = document.getElementById('postId').value;
+        const postData = {
+            title: document.getElementById('postTitle').value, category: document.getElementById('postCategory').value,
+            date: document.getElementById('postDate').value, content: document.getElementById('postContent').value,
+        };
+        if(!postData.title || !postData.date || !postData.content) { alert('Por favor, preencha Título, Data e Conteúdo.'); return; }
+        if (id) {
+            const index = siteData.noticias.findIndex(p => p.id == id);
+            siteData.noticias[index] = { ...siteData.noticias[index], ...postData };
+        } else {
+            postData.id = Date.now();
+            siteData.noticias.push(postData);
+        }
+        renderNews(); renderAdminPostList(); resetPostForm();
+        alert('Notícia salva com sucesso! Não se esqueça de clicar em "Publicar Alterações" para salvar o arquivo final.');
+    });
+    
+    cancelPostBtn.addEventListener('click', resetPostForm);
+
+    adminPostList.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        const id = button.dataset.id;
+        if (button.classList.contains('edit-btn')) {
+            const post = siteData.noticias.find(p => p.id == id);
+            document.getElementById('postId').value = post.id;
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postCategory').value = post.category;
+            document.getElementById('postDate').value = post.date;
+            document.getElementById('postContent').value = post.content;
+            formTitle.innerText = 'Editando Notícia';
+            adminPanel.scrollTop = 0;
+        }
+        if (button.classList.contains('delete-btn')) {
+            if (confirm('Tem certeza que deseja apagar esta notícia?')) {
+                siteData.noticias = siteData.noticias.filter(p => p.id != id);
+                renderNews(); renderAdminPostList();
+            }
+        }
+    });
+
+    exportDataBtn.addEventListener('click', () => {
+        const dataStr = "const siteData = " + JSON.stringify(siteData, null, 4) + ";";
+        const dataBlob = new Blob([dataStr], {type: 'text/javascript'});
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url; link.download = 'jornal-data.js';
+        link.click(); URL.revokeObjectURL(url);
+        alert('Arquivo "jornal-data.js" baixado!\n\nPróximo passo: envie este arquivo para o seu GitHub.');
+    });
+
+    // --- Inicialização ---
+    if (typeof siteData !== 'undefined') {
+        renderNews(); renderTimetable(); renderCalendar();
+    } else {
+        newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo `jornal-data.js` não encontrado.</p>';
+    }
+});
+</script>
+</body>
+</html>
