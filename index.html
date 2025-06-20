@@ -39,9 +39,28 @@
             transform: scale(1.03);
         }
         .day-label { position: absolute; bottom: 10px; left: 0; right: 0; font-size: 0.6rem; font-weight: bold; line-height: 1; }
-        .day-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
-        .day-prova-dark { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
-        .day-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+
+        /* Styles for the colored day number circle */
+        .day-number-wrapper {
+            width: 28px; /* Slightly larger to fit text well */
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%; /* Make it a circle */
+            z-index: 1; /* Ensure it's above other content in the cell if needed */
+        }
+
+        .day-circle-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .day-circle-prova-dark { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .day-circle-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+
+        /* Original classes, now just for reference if needed on the outer cell, but not for background/border */
+        .day-prova, .day-prova-dark, .day-evento {
+            /* These classes will no longer apply background/border to the whole cell */
+            /* Ensure text color is managed by day-number-wrapper if it is not colored */
+            color: inherit; /* Inherit color from parent unless specified by day-number-wrapper */
+        }
     </style>
 </head>
 <body class="bg-black">
@@ -106,13 +125,13 @@
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
             </div>
-            <div class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20">
-                <h4 class="font-bold text-slate-100 mb-2">Legenda:</h4>
-                <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova mr-2"></div><span>Prova</span></div>
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova-dark mr-2"></div><span>Prova Cancelada</span></div>
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full day-evento mr-2"></div><span>Evento</span></div>
-                </div>
+        </div>
+        <div class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20 rounded-xl mt-6">
+            <h4 class="font-bold text-slate-100 mb-2">Legenda:</h4>
+            <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova mr-2" style="background-color: rgba(236, 72, 153, 0.8); border: 1px solid #ec4899;"></div><span>Prova</span></div>
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova-dark mr-2" style="background-color: #be185d; border: 1px solid #ec4899;"></div><span>Prova Cancelada</span></div>
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-evento mr-2" style="background-color: rgba(168, 85, 247, 0.8); border: 1px solid #a855f7;"></div><span>Evento</span></div>
             </div>
         </div>
     </section>
@@ -201,19 +220,31 @@ document.addEventListener('DOMContentLoaded', function() {
         calendarGrid.innerHTML = '';
         for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
         for (let day = 1; day <= daysInMonth; day++) {
-            let classes = 'calendar-day text-center py-2 h-10 sm:h-12 flex items-center justify-center text-xs sm:text-base rounded-full text-slate-300 relative';
+            // Base classes for the outer calendar day cell
+            let cellClasses = 'calendar-day text-center py-2 h-10 sm:h-12 flex items-center justify-center text-xs sm:text-base rounded-full text-slate-300 relative';
+            let dayNumberClasses = 'day-number-wrapper'; // Base class for the day number circle
             let label = '';
-            if ([13, 16, 17].includes(day)) { 
-                classes += ' day-prova-dark'; 
-                label = '<div class="day-label">Prova<br>Cancelada</div>'; 
-            } else if ([12, 18, 23, 24, 25, 26, 27].includes(day)) { 
-                classes += ' day-prova'; 
-                label = '<div class="day-label">Prova</div>'; 
-            } else if (day === 30) { 
-                classes += ' day-evento'; 
-                label = '<div class="day-label">Festa Junina</div>'; 
+
+            // Determine color class for the day number circle and label content
+            if ([13, 16, 17].includes(day)) {
+                dayNumberClasses += ' day-circle-prova-dark';
+                label = '<div class="day-label">Prova<br>Cancelada</div>';
+            } else if ([12, 18, 23, 24, 25, 26, 27].includes(day)) {
+                dayNumberClasses += ' day-circle-prova';
+                label = '<div class="day-label">Prova</div>';
+            } else if (day === 30) {
+                dayNumberClasses += ' day-circle-evento';
+                label = '<div class="day-label">Festa Junina</div>';
             }
-            calendarGrid.insertAdjacentHTML('beforeend', `<div class="${classes}"><div>${day}</div>${label}</div>`);
+
+            calendarGrid.insertAdjacentHTML('beforeend', `
+                <div class="${cellClasses}">
+                    <div class="${dayNumberClasses}">
+                        ${day}
+                    </div>
+                    ${label}
+                </div>
+            `);
         }
     }
 
@@ -227,4 +258,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
+</html>
 </html>
