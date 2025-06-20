@@ -38,7 +38,7 @@
             box-shadow: 0 0 25px rgba(217, 70, 239, 0.6);
             transform: scale(1.03);
         }
-        .day-label { position: absolute; bottom: 10px; left: 0; right: 0; font-size: 0.6rem; font-weight: bold; line-height: 1; }
+        .day-label { position: absolute; bottom: 8px; left: 0; right: 0; font-size: 0.6rem; font-weight: bold; line-height: 1; text-align: center; }
 
         /* Styles for the colored day number circle */
         .day-number-wrapper {
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
         for (let day = 1; day <= daysInMonth; day++) {
             // Base classes for the outer calendar day cell
-            let cellClasses = 'calendar-day text-center py-2 h-10 sm:h-12 flex items-center justify-center text-xs sm:text-base rounded-full text-slate-300 relative';
+            let cellClasses = 'calendar-day text-center h-20 flex flex-col justify-start items-center text-xs sm:text-base rounded-lg text-slate-300 relative p-1';
             let dayNumberClasses = 'day-number-wrapper'; // Base class for the day number circle
             let label = '';
 
