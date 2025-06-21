@@ -1,29 +1,30 @@
-# A linha abaixo deve começar na coluna 1 (sem espaços antes)
 backend:
-  # estas linhas devem ter 2 espaços antes
   name: github
   repo: guilhermeprogam12/Jornal7A
   branch: main
+  site_domain: guilhermeprogam12.github.io
 
-# esta linha deve começar na coluna 1
-publish_mode: editorial_workflow
-
-# estas linhas também começam na coluna 1
 media_folder: "assets/images"
 public_folder: "/assets/images"
 
-# esta linha também começa na coluna 1
 collections:
-  # o '-' indica um item de lista, ele deve ter 2 espaços antes
-  - name: "noticias"
-    # estas linhas devem ter 4 espaços antes
-    label: "Notícias"
-    folder: "_noticias"
-    create: true
-    slug: "{{fields.title}}"
-    fields:
-      # o '-' aqui indica um item da lista de campos, ele deve ter 6 espaços antes
-      - { label: "Título da Notícia", name: "title", widget: "string" }
-      - { label: "Data de Publicação", name: "date", widget: "datetime" }
-      - { label: "Categoria", name: "category", widget: "string", default: "Geral" }
-      - { label: "Corpo da Notícia", name: "body", widget: "markdown" }
+  - name: "configuracoes_jornal"
+    label: "Configurações do Jornal"
+    files:
+      - label: "Notícias"
+        name: "noticias"
+        file: "jornal-data.js" # Caminho para o seu arquivo de dados!
+        parser: "javascript" # Diz ao CMS para entender um arquivo JS
+        fields:
+          - name: "siteData"
+            label: "Dados do Site"
+            widget: "object"
+            fields:
+              - name: "noticias"
+                label: "Lista de Notícias"
+                widget: "list"
+                fields:
+                  - { label: "Título", name: "title", widget: "string" }
+                  - { label: "Categoria", name: "category", widget: "string" }
+                  - { label: "Data", name: "date", widget: "date", format: "YYYY-MM-DD" }
+                  - { label: "Conteúdo", name: "content", widget: "text" }
