@@ -1,0 +1,19 @@
+backend:
+  name: github
+ repo: guilhermeprogam12/Jornal7A
+  branch: main # ou master, dependendo do seu repositório
+
+media_folder: "assets/images" # Pasta onde as imagens de upload irão
+public_folder: "/assets/images" # Como o site irá acessar as imagens
+
+collections:
+  - name: "noticias" # Nome da coleção
+    label: "Notícias" # Como vai aparecer no painel
+    folder: "_data/noticias" # Onde os arquivos das notícias serão salvos
+    create: true # Permite criar novas notícias
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Como o nome do arquivo será gerado
+    fields: # Os campos de cada notícia
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Data", name: "date", widget: "datetime" }
+      - { label: "Categoria", name: "category", widget: "string" }
+      - { label: "Conteúdo", name: "body", widget: "markdown" }
