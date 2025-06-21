@@ -4,7 +4,6 @@ backend:
   name: github
   repo: guilhermeprogam12/Jornal7A # Repositório correto
   branch: main # Ramo principal do seu projeto
-  site_domain: guilhermeprogam12.github.io
 
 media_folder: "assets/images"
 public_folder: "/assets/images"
