@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Jornal 7ºA Desidério</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background-color: #050608;
+            color: #d1d5db;
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.5); /* bg-slate-900/50 */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.2); /* border-sky-400/20 */
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.5); /* border-sky-400/50 */
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+        }
+        .button-glow {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.3);
+        }
+        .button-glow:hover {
+            box-shadow: 0 0 25px rgba(217, 70, 239, 0.6);
+            transform: scale(1.03);
+        }
+        .day-label { position: absolute; bottom: 12px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; }
+
+        /* Styles for the colored day number circle */
+        .day-number-wrapper {
+            width: 28px; /* Slightly larger to fit text well */
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%; /* Make it a circle */
+            z-index: 1; /* Ensure it's above other content in the cell if needed */
+        }
+
+        .day-circle-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .day-circle-prova-dark { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .day-circle-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+
+        /* Original classes, now just for reference if needed on the outer cell, but not for background/border */
+        .day-prova, .day-prova-dark, .day-evento {
+            /* These classes will no longer apply background/border to the whole cell */
+            /* Ensure text color is managed by day-number-wrapper if it is not colored */
+            color: inherit; /* Inherit color from parent unless specified by day-number-wrapper */
+        }
+    </style>
+</head>
+<body class="bg-black">
+
+<header class="bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50 border-b border-sky-400/20">
+    <div class="container mx-auto px-4">
+        <nav class="flex justify-between items-center py-4">
+            <a href="#">
+                <img src="image_1352a2.png" alt="Logo Jornal 7ºA" class="h-10">
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#noticias" class="text-slate-300 hover:text-sky-400 transition-colors">Notícias</a>
+                <a href="#calendario" class="text-slate-300 hover:text-sky-400 transition-colors">Calendário</a>
+                <a href="#horarios" class="text-slate-300 hover:text-sky-400 transition-colors">Horários</a>
+                <a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a>
+            </div>
+            <a href="https://wa.me/16992719558" target="_blank" rel="noopener noreferrer" class="hidden md:inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                <i class="fab fa-whatsapp mr-2"></i>
+                Whatsapp
+              
+            <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-lg">
+                <i class="fab fa-instagram text-xl mr-2"></i>
+                Instagram
+            </a>
+        </div>
+    </div>
+</footer>
+            </a>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden py-4">
+            <a href="#noticias" class="block text-slate-300 hover:text-sky-400 py-2">Notícias</a>
+            <a href="#calendario" class="block text-slate-300 hover:text-sky-400 py-2">Calendário</a>
+            <a href="#horarios" class="block text-slate-300 hover:text-sky-400 py-2">Horários</a>
+            <a href="#sobre-nos" class="block text-slate-300 hover:text-sky-400 py-2">Sobre Nós</a>
+             <a href="https://wa.me/16992719558" target="_blank" rel="noopener noreferrer" class="mt-4 inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                <i class="fab fa-whatsapp mr-2"></i>
+                Contato
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
+    <div class="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
+    <div class="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(0,178,255,.15),rgba(255,255,255,0))]"></div>
+</div>
+
+<main class="container mx-auto px-4 py-8 md:py-12">
+    <section class="text-center my-12 md:my-24">
+        <h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase text-glow tracking-widest">Jornal 7ºA</h1>
+        <p class="text-lg md:text-xl mt-4 text-slate-300 max-w-2xl mx-auto">Quer ficar por dentro das últimas novidades, provas e tudo que acontece na nossa sala? Clique abaixo e mantenha-se sempre informado.</p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#noticias" class="w-full sm:w-auto bg-sky-500 text-white font-bold px-8 py-3 rounded-full hover:bg-sky-400 transition-all duration-300 button-glow shadow-sky-500/30"><i class="fas fa-newspaper mr-2"></i> Últimas Transmissões</a>
+        </div>
+    </section>
+
+    <section class="mb-16" id="noticias">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-sky-400 pl-4">TRANSMISSÕES RECENTES</h2>
+        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <section class="mb-16" id="calendario">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-fuchsia-500 pl-4">CRONOGRAMA DE EVENTOS</h2>
+        <div class="glass-card rounded-xl overflow-hidden">
+            <div class="p-4 md:p-6">
+                <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-white font-orbitron">Junho // 2025</h3></div>
+                <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
+            </div>
+        </div>
+        <div class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20 rounded-xl mt-6">
+            <h4 class="font-bold text-slate-100 mb-2">Legenda:</h4>
+            <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova mr-2" style="background-color: rgba(236, 72, 153, 0.8); border: 1px solid #ec4899;"></div><span>Prova</span></div>
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-prova-dark mr-2" style="background-color: #be185d; border: 1px solid #ec4899;"></div><span>Prova Cancelada</span></div>
+                <div class="flex items-center"><div class="w-3 h-3 rounded-full day-evento mr-2" style="background-color: rgba(168, 85, 247, 0.8); border: 1px solid #a855f7;"></div><span>Evento</span></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="mb-16" id="horarios">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-purple-500 pl-4">GRADE DE AULAS</h2>
+        <div class="glass-card rounded-xl overflow-hidden">
+            <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b border-sky-400/20"><tr><th class="py-3 px-4 font-orbitron">Horário</th><th class="py-3 px-4 font-orbitron">Segunda</th><th class="py-3 px-4 font-orbitron">Terça</th><th class="py-3 px-4 font-orbitron">Quarta</th><th class="py-3 px-4 font-orbitron">Quinta</th><th class="py-3 px-4 font-orbitron">Sexta</th></tr></thead><tbody id="timetable-body" class="text-slate-300"></tbody></table></div>
+        </div>
+    </section>
+
+    <section class="my-12 text-center">
+        <img src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" alt="Foto da turma 7ºA" class="mx-auto rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-sky-400/40 shadow-xl shadow-sky-500/20">
+    </section>
+
+    <section class="mb-16" id="sobre-nos">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">SOBRE NÓS</h2>
+        <div class="glass-card rounded-xl p-6 md:p-8">
+            <p class="text-slate-300 font-light text-lg text-center leading-relaxed">
+                Bem-vindo ao Jornal 7ºA! Este é o nosso canto no universo digital, criado para compartilhar as últimas novidades, eventos importantes e tudo o que acontece na nossa turma. Somos um grupo de estudantes explorando o mundo da comunicação e tecnologia, e este jornal é o nosso projeto. Fique por dentro das datas de provas, trabalhos e celebrações. Navegue pelas nossas transmissões e acompanhe nossa jornada!
+            </p>
+            <div class="mt-8 border-t border-sky-400/20 pt-6">
+                <h3 class="font-orbitron text-2xl font-bold mb-4 text-white text-center">Sobre a Escola</h3>
+                <p class="text-slate-300 font-light text-lg text-center leading-relaxed">
+                    A Escola Municipal de Ensino Fundamental Professor Roberto Zanutto Desidério, em Sertãozinho-SP, foi fundada em 2010. Seu nome é uma homenagem a Roberto Zanutto Desidério, um importante diretor escolar em Sertãozinho entre 1958 e 1974, responsável por melhorias no Instituto de Educação Winston Churchill. A escola é reconhecida por seu ótimo e significativo desempenho comparado com outras escolas do município.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16" id="confraternizacao">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">CONFRATERNIZAÇÃO</h2>
+        <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
+            <video controls class="w-full rounded-lg">
+                <source src="2024 Confraternização.mp4" type="video/mp4">
+                Seu navegador não suporta o elemento de vídeo.
+            </video>
+        </div>
+    </section>
+
+</main>
+
+<footer class="border-t border-sky-400/20 py-8">
+    <div class="container mx-auto px-4 text-center text-slate-400">
+        <p class="font-orbitron">© 2025 JORNAL 7ºA</p>
+        <p class="text-sm mt-2">Frequência de Contato: desiderio.soosa@gmail.com</p>
+        
+        <div class="mt-6 flex justify-center items-center gap-4">
+            <a href="https://wa.me/16992719558" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 shadow-lg">
+                <i class="fab fa-whatsapp text-xl mr-2"></i>
+                Contato
+            </a>
+            <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-lg">
+                <i class="fab fa-instagram text-xl mr-2"></i>
+                Instagram
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script src="jornal-data.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const newsContainer = document.getElementById('news-container');
+    const timetableBody = document.getElementById('timetable-body');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    function renderNews() {
+        newsContainer.innerHTML = '';
+        siteData.noticias.forEach(post => {
+            const postEl = document.createElement('article');
+            postEl.className = 'glass-card rounded-xl overflow-hidden';
+            postEl.innerHTML = `
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-slate-400 mb-3">
+                        <span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category.toUpperCase()}</span><span class="mx-2">•</span><span>${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title}</h3>
+                    <p class="text-slate-300 font-light">${post.content}</p>
+                </div>`;
+            newsContainer.appendChild(postEl);
+        });
+    }
+
+    function renderTimetable() {
+        timetableBody.innerHTML = '';
+        siteData.horarios.forEach(row => {
+            const rowEl = document.createElement('tr');
+            rowEl.className = "border-b border-slate-800 hover:bg-sky-400/5";
+            rowEl.innerHTML = `<td class="py-3 px-4 font-bold text-white">${row.horario}</td><td>${row.segunda}</td><td>${row.terca}</td><td>${row.quarta}</td><td>${row.quinta}</td><td>${row.sexta}</td>`;
+            timetableBody.appendChild(rowEl);
+        });
+    }
+    
+    function renderCalendar() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        const month = 5, year = 2025;
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        calendarGrid.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+        for (let day = 1; day <= daysInMonth; day++) {
+            // Base classes for the outer calendar day cell
+            let cellClasses = 'calendar-day text-center h-28 flex flex-col justify-start items-center text-xs sm:text-base rounded-lg text-slate-300 relative p-2';
+            let dayNumberClasses = 'day-number-wrapper'; // Base class for the day number circle
+            let label = '';
+
+            // Determine color class for the day number circle and label content
+            if ([13, 16, 17].includes(day)) {
+                dayNumberClasses += ' day-circle-prova-dark';
+                label = '<div class="day-label">Prova<br>Cancelada</div>';
+            } else if ([12, 18, 23, 24, 25, 26, 27].includes(day)) {
+                dayNumberClasses += ' day-circle-prova';
+                label = '<div class="day-label">Prova</div>';
+            } else if (day === 30) {
+                dayNumberClasses += ' day-circle-evento';
+                label = '<div class="day-label">Festa Junina</div>';
+            }
+
+            calendarGrid.insertAdjacentHTML('beforeend', `
+                <div class="${cellClasses}">
+                    <div class="${dayNumberClasses}">
+                        ${day}
+                    </div>
+                    ${label}
+                </div>
+            `);
+        }
+    }
+
+    if (typeof siteData !== 'undefined') {
+        renderNews();
+        renderTimetable();
+        renderCalendar();
+    } else {
+        newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo \`jornal-data.js\` não encontrado.</p>';
+    }
+});
+</script>
+</body>
+</html>
