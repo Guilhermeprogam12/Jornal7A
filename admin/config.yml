@@ -1,16 +1,15 @@
-# VERIFIQUE O ALINHAMENTO!
-# As palavras 'backend', 'media_folder', 'public_folder', e 'collections'
-# DEVEM começar no início da linha, sem NENHUM espaço antes.
+# Código final e verificado do config.yml
 
 backend:
   name: github
-  repo: guilhermeprogam12/Jornal7A
-  branch: main
+  repo: guilhermeprogam12/Jornal7A # Repositório correto
+  branch: main # Ramo principal do seu projeto
   site_domain: guilhermeprogam12.github.io
 
 media_folder: "assets/images"
 public_folder: "/assets/images"
 
+# A seção 'collections' está alinhada corretamente
 collections:
   - name: "configuracoes_jornal"
     label: "Configurações do Jornal"
