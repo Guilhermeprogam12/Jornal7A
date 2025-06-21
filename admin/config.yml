@@ -1,14 +1,14 @@
-# Código final e verificado do config.yml
-
 backend:
   name: github
-  repo: guilhermeprogam12/Jornal7A # Repositório correto
-  branch: main # Ramo principal do seu projeto
+  repo: guilhermeprogam12/Jornal7A
+  branch: main
+  # A linha abaixo é a peça que faltava.
+  # Ela diz ao CMS para usar a ponte de autenticação do Netlify.
+  gateway: true
 
 media_folder: "assets/images"
 public_folder: "/assets/images"
 
-# A seção 'collections' está alinhada corretamente
 collections:
   - name: "configuracoes_jornal"
     label: "Configurações do Jornal"
