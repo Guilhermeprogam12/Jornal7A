@@ -156,14 +156,14 @@
         </div>
     </section>
 
-    <section class="my-12 text-center">
-        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-teal-500 pl-4 uppercase">Confraternização</h2>
-        <div class="glass-card rounded-xl overflow-hidden">
-            <div class="aspect-w-16 aspect-h-9">
-                <iframe src="https://player.vimeo.com/video/1059368982?h=58f2d13b7e#t=2s" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
-            </div>
+    <section class="mb-16" id="confraternizacao">
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">CONFRATERNIZAÇÃO</h2>
+        <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
+            <video controls class="w-full rounded-lg">
+                <source src="2024 Confraternização.mp4#t=2" type="video/mp4">
+                Seu navegador não suporta o elemento de vídeo.
+            </video>
         </div>
-         <p class="text-slate-300 font-light text-lg text-center leading-relaxed mt-4">Confraternização</p>
     </section>
 
 </main>
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderTimetable();
         renderCalendar();
     } else {
-        newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo `jornal-data.js` não encontrado.</p>';
+        newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo \`jornal-data.js\` não encontrado.</p>';
     }
 });
 </script>
