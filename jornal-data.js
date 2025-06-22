@@ -35,7 +35,7 @@ const siteData = {
             "date": "2025-06-10",
             "content": "Alunos Gabriel Albino e Apolo Milani, foram convocados para a segunda fase da OBMEP de 2025. Parabéns aos convocados.",
             "id": 1749923420787
-        }
+        },
         { 
              "id": 6,
               "title": "Hoje terça feira 17/06, foi efetuado o conselho para dividir as verbas recebidas pelo Municipio",
@@ -45,7 +45,6 @@ const siteData = {
             {    
             ],
     "horarios": [
-        {
             "horario": "1° Aula",
             "segunda": "Arte",
             "terca": "Português",
