@@ -35,7 +35,13 @@ const siteData = {
             "content": "Alunos Gabriel Albino e Apolo Milani, foram convocados para a segunda fase da OBMEP de 2025. Parabéns aos convocados.",
             "id": 1749923420787
         }
-    ],
+        { 
+              "title": "Hoje terça feira 17/06, foi efetuado o conselho para dividir as verbas recebidas pelo Municipio",
+            "category": "Administração",
+            "date": "2025-06-17",
+            "content": "Hoje terça feira 17/06/2025, foi realizado a distribuição da verba do municipio, para bens não duradouros. Foram distribuidas 45 mil aproximadamente.",
+            {    
+            ],
     "horarios": [
         {
             "horario": "1° Aula",
