@@ -29,12 +29,12 @@ const siteData = {
             "content": "Em processo democrático, a turma elegeu Alice Sarah e Agatha Carolina como líderes de sala, e Isac Felipe dos Santos Silva e Maria Paula Toth como vice-líderes. Parabéns aos eleitos!"
         },
         {
-             
+             "id": 1749923420787
             "title": "Convocação para a 2ªFase da OBMEP",
             "category": "Provas",
             "date": "2025-06-10",
             "content": "Alunos Gabriel Albino e Apolo Milani, foram convocados para a segunda fase da OBMEP de 2025. Parabéns aos convocados.",
-            "id": 1749923420787
+           
         },
         { 
              "id": 6,
@@ -42,8 +42,8 @@ const siteData = {
             "category": "Administração",
             "date": "2025-06-17",
             "content": "Hoje terça feira 17/06/2025, foi realizado a distribuição da verba do municipio, para bens não duradouros. Foram distribuidas 45 mil aproximadamente.",
-            {    
-            ],
+            }    
+    ],
     "horarios": [
             "horario": "1° Aula",
             "segunda": "Arte",
