@@ -42,7 +42,7 @@ const siteData = {
             "category": "Administração",
             "date": "2025-06-17",
             "content": "Hoje terça feira 17/06/2025, foi realizado a distribuição da verba do municipio, para bens não duradouros. Foram distribuidas 45 mil aproximadamente.",
-            }    
+         }    
     ],
     "horarios": [
             "horario": "1° Aula",
