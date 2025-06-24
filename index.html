@@ -176,15 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date();
 
     async function fetchEvents(year, month) {
-        // CORREÇÃO AQUI: A fórmula agora inclui o primeiro e o último dia do mês.
+        // CORREÇÃO: A fórmula agora é mais robusta para pegar todos os eventos do mês
         const firstDayOfMonth = new Date(year, month, 1);
-        const lastDayOfMonth = new Date(year, month + 1, 0);
+        const nextMonth = new Date(year, month + 1, 1);
 
         const firstDayString = firstDayOfMonth.toISOString().split('T')[0];
-        const lastDayString = lastDayOfMonth.toISOString().split('T')[0];
+        const nextMonthString = nextMonth.toISOString().split('T')[0];
 
-        const filterFormula = `AND(IS_ON_OR_AFTER({event_date}, '${firstDayString}'), IS_ON_OR_BEFORE({event_date}, '${lastDayString}'))`;
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario?filterByFormula=${encodeURIComponent(filterFormula)}`;
+        const filterFormula = `AND(IS_AFTER({event_date}, '${firstDayString}'), IS_BEFORE({event_date}, '${nextMonthString}'))`;
+        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario?filterByFormula=OR(IS_SAME({event_date},'${firstDayString}'),${filterFormula})`;
         
         try {
             const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
