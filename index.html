@@ -15,13 +15,10 @@
         .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
         .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
         .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
-        
-        /* CORREÇÃO AQUI: Classes de evento agora em minúsculo para serem mais robustas */
         .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
         .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
         .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
         .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
-
         .news-content { white-space: pre-line; }
     </style>
 </head>
@@ -148,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             newsContainer.innerHTML = '';
-            if (data.records) {
+            if (data.records && data.records.length > 0) {
                 data.records.forEach(record => {
                     const post = record.fields;
                     const formattedContent = (post.content || '').replace(/\n/g, '<br>');
@@ -164,7 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>`;
                     newsContainer.appendChild(postEl);
                 });
-            } else { throw new Error("Nenhum registro de notícia encontrado."); }
+            } else { 
+                newsContainer.innerHTML = '<p class="text-slate-400">Nenhuma notícia recente encontrada.</p>';
+            }
         })
         .catch(error => {
             console.error('Erro ao buscar notícias do Airtable:', error);
@@ -177,9 +176,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date();
 
     async function fetchEvents(year, month) {
-        const firstDay = new Date(year, month, 1).toISOString().split('T')[0];
-        const lastDay = new Date(year, month + 1, 0).toISOString().split('T')[0];
-        const filterFormula = `AND(IS_AFTER({event_date}, '${firstDay}'), IS_BEFORE({event_date}, '${lastDay}'))`;
+        // CORREÇÃO AQUI: A fórmula agora inclui o primeiro e o último dia do mês.
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+
+        const firstDayString = firstDayOfMonth.toISOString().split('T')[0];
+        const lastDayString = lastDayOfMonth.toISOString().split('T')[0];
+
+        const filterFormula = `AND(IS_ON_OR_AFTER({event_date}, '${firstDayString}'), IS_ON_OR_BEFORE({event_date}, '${lastDayString}'))`;
         const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario?filterByFormula=${encodeURIComponent(filterFormula)}`;
         
         try {
@@ -192,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!events[day]) events[day] = [];
                     events[day].push({
                         title: record.fields.event_title,
-                        // CORREÇÃO AQUI: Garante que tudo fique minúsculo e sem espaços
                         type: (record.fields.event_type || '').replace(/\s+/g, '-').toLowerCase()
                     });
                 });
@@ -210,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const monthName = date.toLocaleDateString('pt-BR', { month: 'long' });
         monthYearTitle.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} // ${year}`;
         
+        calendarGrid.innerHTML = `<p class="col-span-7 text-center">Carregando...</p>`;
         const events = await fetchEvents(year, month);
         
         const firstDayOfMonth = new Date(year, month, 1).getDay();
