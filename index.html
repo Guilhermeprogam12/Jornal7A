@@ -98,6 +98,7 @@
             <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b border-sky-400/20"><tr><th class="py-3 px-4 font-orbitron">Horário</th><th class="py-3 px-4 font-orbitron">Segunda</th><th class="py-3 px-4 font-orbitron">Terça</th><th class="py-3 px-4 font-orbitron">Quarta</th><th class="py-3 px-4 font-orbitron">Quinta</th><th class="py-3 px-4 font-orbitron">Sexta</th></tr></thead><tbody id="timetable-body" class="text-slate-300"></tbody></table></div>
         </div>
     </section>
+
     <section class="mb-16" id="sobre-nos">
         <div class="text-center mb-12">
             <img src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" alt="Foto da turma 7ºA" class="mx-auto rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-sky-400/40 shadow-xl shadow-sky-500/20">
@@ -111,6 +112,7 @@
             </div>
         </div>
     </section>
+
     <section class="mb-16" id="confraternizacao">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
         <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
@@ -121,6 +123,7 @@
         </div>
     </section>
 </main>
+
 <footer class="border-t border-sky-400/20 py-8">
     <div class="container mx-auto px-4 text-center text-slate-400">
         <p class="font-orbitron">© 2025 JORNAL 7ºA</p>
@@ -131,17 +134,13 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- CONFIGURAÇÃO GLOBAL DO AIRTABLE ---
-    const AIRTABLE_API_KEY = 'pathwSK7lh88x87gb.deb0e1ecd86f27327c4b209217dbd610cc931203852923c9d1241d73695e118b'; 
-    const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; 
-    // ------------------------------------------
-
     // ---- FUNÇÕES DE RENDERIZAÇÃO ----
     function renderNews() {
         const newsContainer = document.getElementById('news-container');
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Noticias?sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc`;
+        // ATUALIZAÇÃO: Agora chama a nossa função segura na Netlify
+        const url = `/.netlify/functions/airtable?table=Noticias`;
 
-        fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } })
+        fetch(url)
         .then(response => response.json())
         .then(data => {
             newsContainer.innerHTML = '';
@@ -166,8 +165,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Erro ao buscar notícias do Airtable:', error);
-            newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias.</p>';
+            console.error('Erro ao buscar notícias:', error);
+            newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias. Verifique o console.</p>';
         });
     }
 
@@ -176,28 +175,25 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date();
 
     async function fetchEvents(year, month) {
-        // CORREÇÃO: A fórmula agora é mais robusta para pegar todos os eventos do mês
-        const firstDayOfMonth = new Date(year, month, 1);
-        const nextMonth = new Date(year, month + 1, 1);
-
-        const firstDayString = firstDayOfMonth.toISOString().split('T')[0];
-        const nextMonthString = nextMonth.toISOString().split('T')[0];
-
-        const filterFormula = `AND(IS_AFTER({event_date}, '${firstDayString}'), IS_BEFORE({event_date}, '${nextMonthString}'))`;
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario?filterByFormula=OR(IS_SAME({event_date},'${firstDayString}'),${filterFormula})`;
+        // ATUALIZAÇÃO: Agora chama a nossa função segura na Netlify
+        const url = `/.netlify/functions/airtable?table=Calendario`;
         
         try {
-            const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
+            const response = await fetch(url);
             const data = await response.json();
             const events = {};
             if (data.records) {
                 data.records.forEach(record => {
-                    const day = new Date(record.fields.event_date).getUTCDate();
-                    if (!events[day]) events[day] = [];
-                    events[day].push({
-                        title: record.fields.event_title,
-                        type: (record.fields.event_type || '').replace(/\s+/g, '-').toLowerCase()
-                    });
+                    const eventDate = new Date(record.fields.event_date);
+                    // Filtra os eventos para o mês e ano corretos
+                    if (eventDate.getUTCFullYear() === year && eventDate.getUTCMonth() === month) {
+                        const day = eventDate.getUTCDate();
+                        if (!events[day]) events[day] = [];
+                        events[day].push({
+                            title: record.fields.event_title,
+                            type: (record.fields.event_type || '').replace(/\s+/g, '-').toLowerCase()
+                        });
+                    }
                 });
             }
             return events;
