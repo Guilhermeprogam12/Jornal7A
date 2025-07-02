@@ -1,17 +1,3 @@
-# Configuração de Build Explícita
+# Este é o comando de construção. Diz à Netlify para se preparar.
 [build]
-  # Comando para garantir que o processo de build seja acionado.
-  command = "echo 'Build em andamento...'"
-  # Diz à Netlify que os arquivos do seu site estão na pasta principal.
-  publish = "." 
-  # Diz à Netlify onde encontrar a pasta do seu "cofre" (as funções).
-  functions = "netlify/functions"
-
-# Cria um atalho seguro e limpo para o nosso cofre
-[[redirects]]
-  # Qualquer chamada para /api/...
-  from = "/api/*"
-  # ...será redirecionada para a nossa função correta.
-  to = "/.netlify/functions/:splat"
-  # Status 200 significa que a operação foi um sucesso.
-  status = 200
+  functions = "netlify/functions" # Avisa onde está a "cozinha" dos nossos garçons-robôs.
