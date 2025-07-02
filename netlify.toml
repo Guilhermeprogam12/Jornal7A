@@ -1,11 +1,17 @@
+# Configuração de Build Explícita
 [build]
-  # Diz à Netlify que os arquivos do seu site estão na pasta principal
+  # Comando para garantir que o processo de build seja acionado.
+  command = "echo 'Build em andamento...'"
+  # Diz à Netlify que os arquivos do seu site estão na pasta principal.
   publish = "." 
-  # Diz à Netlify onde encontrar a pasta dos seus "cofres"
+  # Diz à Netlify onde encontrar a pasta do seu "cofre" (as funções).
   functions = "netlify/functions"
 
-# Cria um atalho seguro para os seus "cofres"
+# Cria um atalho seguro e limpo para o nosso cofre
 [[redirects]]
-  from = "/.netlify/functions/*"
+  # Qualquer chamada para /api/...
+  from = "/api/*"
+  # ...será redirecionada para a nossa função correta.
   to = "/.netlify/functions/:splat"
+  # Status 200 significa que a operação foi um sucesso.
   status = 200
