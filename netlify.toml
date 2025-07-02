@@ -1,11 +1,11 @@
 [build]
   # Diz à Netlify que os arquivos do seu site estão na pasta principal
   publish = "." 
-  # Diz à Netlify onde encontrar o cofre
+  # Diz à Netlify onde encontrar a pasta dos seus "cofres"
   functions = "netlify/functions"
 
-# Cria um atalho seguro para o nosso cofre
+# Cria um atalho seguro para os seus "cofres"
 [[redirects]]
-  from = "/api/*"
+  from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
