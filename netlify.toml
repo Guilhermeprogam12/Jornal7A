@@ -1,3 +1,15 @@
-# Este é o comando de construção. Diz à Netlify para se preparar.
+# Configuração de Construção
 [build]
-  functions = "netlify/functions" # Avisa onde está a "cozinha" dos nossos garçons-robôs.
+  # Diz à Netlify que a pasta principal do seu site é esta mesma (o ".")
+  publish = "."
+  # Diz à Netlify onde encontrar a sua "cozinha" segura
+  functions = "netlify/functions"
+
+# Regra de Redirecionamento (O Atalho Inteligente)
+[[redirects]]
+  # Qualquer chamada para /api/alguma-coisa...
+  from = "/api/*"
+  # ...será levada para a cozinha correta.
+  to = "/.netlify/functions/:splat"
+  # Status 200 significa que a operação é válida.
+  status = 200
