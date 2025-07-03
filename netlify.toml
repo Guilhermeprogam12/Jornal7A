@@ -1,15 +1,5 @@
-# Configuração de Construção
 [build]
   # Diz à Netlify que a pasta principal do seu site é esta mesma (o ".")
-  publish = "."
+  publish = "." 
   # Diz à Netlify onde encontrar a sua "cozinha" segura
   functions = "netlify/functions"
-
-# Regra de Redirecionamento (O Atalho Inteligente)
-[[redirects]]
-  # Qualquer chamada para /api/alguma-coisa...
-  from = "/api/*"
-  # ...será levada para a cozinha correta.
-  to = "/.netlify/functions/:splat"
-  # Status 200 significa que a operação é válida.
-  status = 200
