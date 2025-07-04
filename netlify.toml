@@ -1,5 +1,2 @@
 [build]
-  # Diz à Netlify que a pasta principal do seu site é esta mesma (o ".")
-  publish = "." 
-  # Diz à Netlify onde encontrar a sua "cozinha" segura
   functions = "netlify/functions"
