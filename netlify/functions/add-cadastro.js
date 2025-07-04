@@ -1,25 +1,46 @@
-// Esta é a receita de como nosso "garçom-robô" deve trabalhar.
 exports.handler = async function(event) {
-    // 1. Regra de Segurança: O robô só aceita pedidos que vêm do formulário (método POST).
-    // Se alguém tentar acessar o endereço do robô diretamente, ele recusa.
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Método não permitido' };
+        return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
     try {
-        // 2. Pega as chaves secretas que SÓ a Netlify (o "gerente") conhece.
-        // Elas nunca aparecem no site.
-        const apiKey = process.env.AIRTABLE_API_KEY;
-        const baseId = process.env.AIRTABLE_BASE_ID;
-
-        // 3. Monta o endereço correto para a tabela "Cadastros" no Airtable.
-        const url = `https://api.airtable.com/v0/${baseId}/Cadastros`;
-        
-        // 4. Pega os dados que o usuário preencheu no formulário.
         const { nome, email, turma } = JSON.parse(event.body);
 
-        // 5. Prepara os dados no formato exato que o Airtable entende.
-        const airtableData = {
+        if (!nome || !email || !turma) {
+            return { statusCode: 400, body: JSON.stringify({ error: 'Todos os campos são obrigatórios.' }) };
+        }
+
+        const apiKey = process.env.AIRTABLE_API_KEY;
+        const baseId = process.env.AIRTABLE_BASE_ID;
+        
+        // --- NOVA LÓGICA DE VERIFICAÇÃO ---
+        // 1. Monta o endereço para PROCURAR o e-mail, usando uma fórmula
+        const filterFormula = encodeURIComponent(`{email} = '${email}'`);
+        const searchUrl = `https://api.airtable.com/v0/${baseId}/Cadastros?filterByFormula=${filterFormula}`;
+
+        // 2. Procura no Airtable
+        const searchResponse = await fetch(searchUrl, {
+            headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+
+        if (!searchResponse.ok) {
+            throw new Error('Erro ao verificar e-mail no Airtable.');
+        }
+
+        const searchData = await searchResponse.json();
+
+        // 3. Se a busca encontrou algum registro (a lista não está vazia), retorna o erro
+        if (searchData.records && searchData.records.length > 0) {
+            return {
+                statusCode: 409, // 409 é o código HTTP para "Conflito"
+                body: JSON.stringify({ error: 'Este e-mail já está cadastrado!' })
+            };
+        }
+        // --- FIM DA LÓGICA DE VERIFICAÇÃO ---
+
+        // 4. Se o e-mail não existe, continua para salvar o novo cadastro
+        const createUrl = `https://api.airtable.com/v0/${baseId}/Cadastros`;
+        const createData = {
             fields: {
                 "nome_completo": nome,
                 "email": email,
@@ -27,35 +48,31 @@ exports.handler = async function(event) {
             }
         };
 
-        // 6. Envia os dados para o Airtable usando as chaves seguras.
-        const response = await fetch(url, {
+        const createResponse = await fetch(createUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(airtableData)
+            body: JSON.stringify(createData)
         });
 
-        // 7. Verifica se o Airtable respondeu "OK, recebi!".
-        if (!response.ok) {
-            // Se o Airtable der um erro, o robô avisa que deu problema.
-            console.error('Erro retornado pelo Airtable:', await response.text());
-            throw new Error('Falha ao salvar no Airtable.');
+        if (!createResponse.ok) {
+            throw new Error('Falha ao salvar o novo cadastro no Airtable.');
         }
 
-        // 8. Se tudo deu certo, o robô volta com uma mensagem de sucesso.
+        const responseData = await createResponse.json();
+
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: 'Cadastro realizado com sucesso!' })
+            body: JSON.stringify({ message: 'Cadastro realizado com sucesso!', record: responseData })
         };
 
     } catch (error) {
-        // 9. Se qualquer outra coisa no processo der errado, o robô avisa.
         console.error('Erro na função:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Ocorreu um erro no servidor.' })
+            body: JSON.stringify({ error: 'Ocorreu um erro interno no servidor.' })
         };
     }
 };
