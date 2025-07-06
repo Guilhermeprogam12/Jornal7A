@@ -1,53 +1,94 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" style="scroll-behavior: smooth;">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Jornal 7ºA Desidério</title>
-    </head>
+    <link rel="icon" type="image/png" href="image_1352a2.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
+        .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
+        .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+        .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
+        .news-content { white-space: pre-line; }
+    </style>
+</head>
 <body class="bg-black">
 
+<header class="bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50 border-b border-sky-400/20">
+    <div class="container mx-auto px-4">
+        <nav class="flex justify-between items-center py-4">
+            <a href="#"><img src="image_1352a2.png" alt="Logo Jornal 7ºA" class="h-10"></a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#noticias" class="text-slate-300 hover:text-sky-400 transition-colors">Notícias</a>
+                <a href="#calendario" class="text-slate-300 hover:text-sky-400 transition-colors">Calendário</a>
+                <a href="#horarios" class="text-slate-300 hover:text-sky-400 transition-colors">Horários</a>
+                <a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a>
+            </div>
+            <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full">
+                <i class="fab fa-instagram mr-2"></i> Instagram
+            </a>
+            <button id="mobile-menu-button" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden py-4">
+            <a href="#noticias" class="block text-slate-300 hover:text-sky-400 py-2">Notícias</a>
+            <a href="#calendario" class="block text-slate-300 hover:text-sky-400 py-2">Calendário</a>
+            <a href="#horarios" class="block text-slate-300 hover:text-sky-400 py-2">Horários</a>
+            <a href="#sobre-nos" class="block text-slate-300 hover:text-sky-400 py-2">Sobre Nós</a>
+        </div>
+    </div>
+</header>
+
 <main class="container mx-auto px-4 py-8 md:py-12">
+    <section id="noticias">
+        </section>
+    <section id="calendario">
+        </section>
     </main>
+
+<footer class="border-t border-sky-400/20 py-8">
+    <div class="container mx-auto px-4 text-center text-slate-400">
+        <p class="font-orbitron">© 2025 JORNAL 7ºA</p>
+    </div>
+</footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    function renderNews() {
-        const newsContainer = document.getElementById('news-container');
-        // ATUALIZAÇÃO: Agora chama nosso atalho seguro /api/
-        const url = `/api/airtable?table=Noticias`;
-
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // ... (código para mostrar as notícias) ...
-        })
-        .catch(error => {
-            console.error('Erro ao buscar notícias:', error);
-            newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias.</p>';
-        });
-    }
-
-    async function fetchEvents(year, month) {
-        // ATUALIZAÇÃO: Agora chama nosso atalho seguro /api/
-        const url = `/api/airtable?table=Calendario`;
-        
+    // ---- FUNÇÃO PARA BUSCAR DADOS DO "COFRE" SEGURO ----
+    async function fetchFromAPI(table) {
+        // A URL agora usa o atalho /api/ que configuramos no netlify.toml
+        const url = `/api/airtable?table=${table}`;
         try {
             const response = await fetch(url);
-            // ... (resto do código para buscar eventos) ...
+            if (!response.ok) throw new Error(`Erro na rede ao buscar ${table}`);
+            return await response.json();
         } catch (error) {
-            console.error('Erro ao buscar eventos:', error);
-            return {};
+            console.error(`Erro em fetchFromAPI para ${table}:`, error);
+            throw error;
         }
     }
 
-    // ... (resto do seu JavaScript) ...
+    // --- FUNÇÕES PARA RENDERIZAR NOTÍCIAS E CALENDÁRIO ---
+    // (Todo o código para renderNews e renderCalendar que já fizemos antes vai aqui)
+
+    // ---- INICIALIZAÇÃO ----
+    // ... (Código para os botões de menu e calendário)
     
     renderNews();
     renderCalendar(currentDate);
-
+    // ...
 });
 </script>
+
 </body>
 </html>
