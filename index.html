@@ -1,43 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" style="scroll-behavior: smooth;">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Jornal 7ºA Desidério</title>
+    <link rel="icon" type="image/png" href="image_1352a2.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Exo 2', sans-serif;
-            background-color: #050608;
-            color: #d1d5db;
-        }
+        body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass-card {
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-        }
-        .day-label { position: absolute; bottom: 12px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; }
-        .day-number-wrapper {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            z-index: 1;
-        }
-        .day-circle-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
-        .day-circle-prova-dark { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
-        .day-circle-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+        .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
+        .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
+        .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+        .news-content { white-space: pre-line; }
     </style>
 </head>
 <body class="bg-black">
@@ -53,7 +34,7 @@
                 <a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a>
             </div>
             <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full">
-                <i class="fab fa-instagram text-xl mr-2"></i> Instagram
+                <i class="fab fa-instagram mr-2"></i> Instagram
             </a>
             <button id="mobile-menu-button" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
         </nav>
@@ -66,27 +47,22 @@
     </div>
 </header>
 
-<div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
-    <div class="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
-    <div class="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(0,178,255,.15),rgba(255,255,255,0))]"></div>
-</div>
-
 <main class="container mx-auto px-4 py-8 md:py-12">
     <section class="text-center my-12 md:my-24">
-        <h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase tracking-widest">Jornal 7ºA</h1>
-        <p class="text-lg md:text-xl mt-4 text-slate-300 max-w-2xl mx-auto">Fique Sempre Informado Sobre o 7ºA.</p>
+        <h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase">Jornal 7ºA</h1>
+        <p class="text-lg md:text-xl mt-4 text-slate-300 max-w-2xl mx-auto">As últimas novidades, provas e tudo que acontece na nossa sala.</p>
     </section>
 
     <section class="mb-16" id="noticias">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-sky-400 pl-4">TRANSMISSÕES RECENTES</h2>
-        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><p>Carregando...</p></div>
     </section>
 
     <section class="mb-16" id="calendario">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-fuchsia-500 pl-4">CRONOGRAMA DE EVENTOS</h2>
         <div class="glass-card rounded-xl overflow-hidden">
             <div class="p-4 md:p-6">
-                <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-white font-orbitron">Junho // 2025</h3></div>
+                <div class="flex justify-between items-center mb-6"><h3 id="month-year-title" class="text-xl font-bold text-white font-orbitron"></h3></div>
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
             </div>
@@ -108,12 +84,9 @@
     </section>
 
     <section class="mb-16" id="confraternizacao">
-        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">CONFRATERNIZAÇÃO</h2>
+        <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
         <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
-            <video controls class="w-full rounded-lg">
-                <source src="2024 Confraternização.mp4" type="video/mp4">
-                Seu navegador não suporta o elemento de vídeo.
-            </video>
+            <video controls class="w-full rounded-lg"><source src="2024 Confraternização.mp4" type="video/mp4"></video>
         </div>
     </section>
 </main>
@@ -127,38 +100,32 @@
 <script src="jornal-data.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
     const newsContainer = document.getElementById('news-container');
     const timetableBody = document.getElementById('timetable-body');
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
-    mobileMenuButton.addEventListener('click', function() {
-        mobileMenu.classList.toggle('hidden');
-    });
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    }
 
     function renderNews() {
+        if (!newsContainer || !siteData || !siteData.noticias) return;
         newsContainer.innerHTML = '';
         siteData.noticias.forEach(post => {
             const postEl = document.createElement('article');
             postEl.className = 'glass-card rounded-xl overflow-hidden';
-            postEl.innerHTML = \`
-                <div class="p-6">
-                    <div class="flex items-center text-sm text-slate-400 mb-3">
-                        <span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">\${post.category.toUpperCase()}</span><span class="mx-2">•</span><span>\${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3 text-white font-orbitron">\${post.title}</h3>
-                    <p class="text-slate-300 font-light">\${post.content}</p>
-                </div>\`;
+            postEl.innerHTML = \`<div class="p-6"><div class="flex items-center text-sm text-slate-400 mb-3"><span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">\${post.category.toUpperCase()}</span><span class="mx-2">•</span><span>\${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span></div><h3 class="text-xl font-bold mb-3 text-white font-orbitron">\${post.title}</h3><p class="text-slate-300 font-light news-content">\${post.content}</p></div>\`;
             newsContainer.appendChild(postEl);
         });
     }
 
     function renderTimetable() {
+        if (!timetableBody || !siteData || !siteData.horarios) return;
         timetableBody.innerHTML = '';
         siteData.horarios.forEach(row => {
             const rowEl = document.createElement('tr');
-            rowEl.className = "border-b border-slate-800 hover:bg-sky-400/5";
+            rowEl.className = "border-b border-slate-800";
             rowEl.innerHTML = \`<td class="py-3 px-4 font-bold text-white">\${row.horario}</td><td>\${row.segunda}</td><td>\${row.terca}</td><td>\${row.quarta}</td><td>\${row.quinta}</td><td>\${row.sexta}</td>\`;
             timetableBody.appendChild(rowEl);
         });
@@ -166,33 +133,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function renderCalendar() {
         const calendarGrid = document.getElementById('calendar-grid');
+        const monthYearTitle = document.getElementById('month-year-title');
+        if (!calendarGrid || !monthYearTitle) return;
+
         const month = 5, year = 2025; // Junho de 2025
+        monthYearTitle.textContent = 'Junho // 2025';
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         calendarGrid.innerHTML = '';
         for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+        
         for (let day = 1; day <= daysInMonth; day++) {
-            let cellClasses = 'text-center h-28 flex flex-col justify-start items-center p-2 relative';
-            let dayNumberClasses = 'day-number-wrapper';
+            let dayClasses = 'day-number-wrapper';
             let label = '';
-            
             if ([13, 16, 17].includes(day)) {
-                dayNumberClasses += ' day-circle-prova-dark';
+                dayClasses += ' event-prova-cancelada';
                 label = '<div class="day-label">Prova<br>Cancelada</div>';
             } else if ([12, 18, 23, 24, 25, 26, 27].includes(day)) {
-                dayNumberClasses += ' day-circle-prova';
+                dayClasses += ' event-prova';
                 label = '<div class="day-label">Prova</div>';
             } else if (day === 30) {
-                dayNumberClasses += ' day-circle-evento';
+                dayClasses += ' event-evento';
                 label = '<div class="day-label">Festa Junina</div>';
             }
-
-            calendarGrid.insertAdjacentHTML('beforeend', \`
-                <div class="\${cellClasses}">
-                    <div class="\${dayNumberClasses}">\${day}</div>
-                    \${label}
-                </div>
-            \`);
+            calendarGrid.insertAdjacentHTML('beforeend', \`<div class="text-center h-28 flex flex-col justify-start items-center p-2 relative"><div class="\${dayClasses}">\${day}</div>\${label}</div>\`);
         }
     }
 
@@ -201,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderTimetable();
         renderCalendar();
     } else {
-        newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo \`jornal-data.js\` não encontrado.</p>';
+        if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo \`jornal-data.js\` não encontrado.</p>';
     }
 });
 </script>
