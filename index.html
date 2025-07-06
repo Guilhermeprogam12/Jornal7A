@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" style="scroll-behavior: smooth;">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -10,16 +9,15 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; scroll-behavior: smooth; }
+        body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
         .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-        .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
+        .day-label { position: absolute; bottom: 12px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; }
         .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
-        .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
-        .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
-        .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
-        .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
+        .day-circle-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .day-circle-prova-dark { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .day-circle-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
         .news-content { white-space: pre-line; }
     </style>
 </head>
@@ -35,8 +33,8 @@
                 <a href="#horarios" class="text-slate-300 hover:text-sky-400 transition-colors">Horários</a>
                 <a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a>
             </div>
-            <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-lg">
-                <i class="fab fa-instagram text-xl mr-2"></i> Instagram
+            <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full">
+                <i class="fab fa-instagram mr-2"></i> Instagram
             </a>
             <button id="mobile-menu-button" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
         </nav>
@@ -49,11 +47,6 @@
     </div>
 </header>
 
-<div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
-    <div class="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
-    <div class="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(0,178,255,.15),rgba(255,255,255,0))]"></div>
-</div>
-
 <main class="container mx-auto px-4 py-8 md:py-12">
     <section class="text-center my-12 md:my-24">
         <h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase">Jornal 7ºA</h1>
@@ -62,32 +55,23 @@
 
     <section class="mb-16" id="noticias">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-sky-400 pl-4">TRANSMISSÕES RECENTES</h2>
-        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <p>Carregando notícias...</p>
-        </div>
+        <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
     <section class="mb-16" id="calendario">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-fuchsia-500 pl-4">CRONOGRAMA DE EVENTOS</h2>
         <div class="glass-card rounded-xl overflow-hidden">
             <div class="p-4 md:p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <button id="prev-month" class="text-sky-400 hover:text-white transition-colors p-2 rounded-full"><i class="fas fa-chevron-left"></i></button>
-                    <h3 id="month-year-title" class="text-xl font-bold text-white font-orbitron"></h3>
-                    <button id="next-month" class="text-sky-400 hover:text-white transition-colors p-2 rounded-full"><i class="fas fa-chevron-right"></i></button>
-                </div>
+                <div class="flex justify-between items-center mb-6"><h3 id="month-year-title" class="text-xl font-bold text-white font-orbitron"></h3></div>
                 <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2">
-                    <p class="col-span-7 text-center">Carregando calendário...</p>
-                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
             </div>
-            <div id="calendar-legend" class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20 mt-6 rounded-b-xl">
+            <div class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20 mt-6 rounded-b-xl">
                  <h4 class="font-bold text-slate-100 mb-2">Legenda:</h4>
                 <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 event-prova"></div><span>Prova</span></div>
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 event-prova-cancelada"></div><span>Prova Cancelada</span></div>
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 event-evento"></div><span>Evento</span></div>
-                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 event-feriado"></div><span>Feriado</span></div>
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 day-circle-prova"></div><span>Prova</span></div>
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 day-circle-prova-dark"></div><span>Prova Cancelada</span></div>
+                    <div class="flex items-center"><div class="w-3 h-3 rounded-full mr-2 day-circle-evento"></div><span>Evento</span></div>
                 </div>
             </div>
         </div>
@@ -101,26 +85,16 @@
     </section>
 
     <section class="mb-16" id="sobre-nos">
-        <div class="text-center mb-12">
-            <img src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" alt="Foto da turma 7ºA" class="mx-auto rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-sky-400/40 shadow-xl shadow-sky-500/20">
-        </div>
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">SOBRE NÓS</h2>
         <div class="glass-card rounded-xl p-6 md:p-8">
-            <p class="text-slate-300 font-light text-lg text-center leading-relaxed">Bem-vindo ao Jornal 7ºA! Este é o nosso canto no universo digital, criado para compartilhar as últimas novidades, eventos importantes e tudo o que acontece na nossa turma. Somos um grupo de estudantes explorando o mundo da comunicação e tecnologia, e este jornal é o nosso projeto.</p>
-            <div class="mt-8 border-t border-sky-400/20 pt-6">
-                <h3 class="font-orbitron text-2xl font-bold mb-4 text-white text-center">Sobre a Escola</h3>
-                <p class="text-slate-300 font-light text-lg text-center leading-relaxed">A Escola Municipal de Ensino Fundamental Professor Roberto Zanutto Desidério, em Sertãozinho-SP, foi fundada em 2010. Seu nome é uma homenagem a Roberto Zanutto Desidério, um importante diretor escolar em Sertãozinho entre 1958 e 1974, responsável por melhorias no Instituto de Educação Winston Churchill. A escola é reconhecida por seu ótimo e significativo desempenho comparado com outras escolas do município.</p>
-            </div>
+            <p class="text-slate-300 font-light text-lg text-center leading-relaxed">Bem-vindo ao Jornal 7ºA! Este é o nosso canto no universo digital, criado para compartilhar as últimas novidades, eventos importantes e tudo o que acontece na nossa turma.</p>
         </div>
     </section>
 
     <section class="mb-16" id="confraternizacao">
         <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
         <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
-            <video controls class="w-full rounded-lg">
-                <source src="2024 Confraternização.mp4" type="video/mp4">
-                Seu navegador não suporta o elemento de vídeo.
-            </video>
+            <video controls class="w-full rounded-lg"><source src="2024 Confraternização.mp4" type="video/mp4"></video>
         </div>
     </section>
 </main>
@@ -128,150 +102,80 @@
 <footer class="border-t border-sky-400/20 py-8">
     <div class="container mx-auto px-4 text-center text-slate-400">
         <p class="font-orbitron">© 2025 JORNAL 7ºA</p>
-        <p class="text-sm mt-2">Frequência de Contato: desiderio.soosa@gmail.com</p>
     </div>
 </footer>
 
+<script src="jornal-data.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- COLE SUAS CHAVES DO AIRTABLE AQUI ---
-    const AIRTABLE_API_KEY = 'pathwSK7lh88x87gb.deb0e1ecd86f27327c4b209217dbd610cc931203852923c9d1241d73695e118b'; 
-    const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; 
-    // ------------------------------------------
+    const newsContainer = document.getElementById('news-container');
+    const timetableBody = document.getElementById('timetable-body');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-    // ---- FUNÇÕES DE RENDERIZAÇÃO ----
+    if (mobileMenuButton) {
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    }
+
     function renderNews() {
-        const newsContainer = document.getElementById('news-container');
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Noticias?sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc`;
-
-        fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } })
-        .then(response => response.json())
-        .then(data => {
-            newsContainer.innerHTML = '';
-            if (data.records && data.records.length > 0) {
-                data.records.forEach(record => {
-                    const post = record.fields;
-                    const formattedContent = (post.content || '').replace(/\n/g, '<br>');
-                    const postEl = document.createElement('article');
-                    postEl.className = 'glass-card rounded-xl overflow-hidden';
-                    postEl.innerHTML = `
-                        <div class="p-6">
-                            <div class="flex items-center text-sm text-slate-400 mb-3">
-                                <span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category ? post.category.toUpperCase() : 'GERAL'}</span><span class="mx-2">•</span><span>${post.date ? new Date(post.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : 'Sem Data'}</span>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title || 'Sem Título'}</h3>
-                            <p class="text-slate-300 font-light news-content">${formattedContent}</p>
-                        </div>`;
-                    newsContainer.appendChild(postEl);
-                });
-            } else { 
-                newsContainer.innerHTML = '<p class="text-slate-400">Nenhuma notícia recente encontrada.</p>';
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao buscar notícias do Airtable:', error);
-            newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias.</p>';
+        if (!newsContainer || !window.siteData || !siteData.noticias) return;
+        newsContainer.innerHTML = '';
+        siteData.noticias.forEach(post => {
+            const postEl = document.createElement('article');
+            postEl.className = 'glass-card rounded-xl overflow-hidden';
+            postEl.innerHTML = \`<div class="p-6"><div class="flex items-center text-sm text-slate-400 mb-3"><span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">\${post.category.toUpperCase()}</span><span class="mx-2">•</span><span>\${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span></div><h3 class="text-xl font-bold mb-3 text-white font-orbitron">\${post.title}</h3><p class="text-slate-300 font-light news-content">\${post.content.replace(/\\n/g, '<br>')}</p></div>\`;
+            newsContainer.appendChild(postEl);
         });
     }
 
-    const monthYearTitle = document.getElementById('month-year-title');
-    const calendarGrid = document.getElementById('calendar-grid');
-    let currentDate = new Date();
-
-    async function fetchEvents(year, month) {
-        const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario`;
-        
-        try {
-            const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
-            const data = await response.json();
-            const events = {};
-            if (data.records) {
-                data.records.forEach(record => {
-                    const eventDate = new Date(record.fields.event_date);
-                    if (eventDate.getUTCFullYear() === year && eventDate.getUTCMonth() === month) {
-                        const day = eventDate.getUTCDate();
-                        if (!events[day]) events[day] = [];
-                        events[day].push({
-                            title: record.fields.event_title,
-                            type: (record.fields.event_type || '').replace(/\s+/g, '-').toLowerCase()
-                        });
-                    }
-                });
-            }
-            return events;
-        } catch (error) {
-            console.error('Erro ao buscar eventos:', error);
-            return {};
-        }
-    }
-
-    async function renderCalendar(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const monthName = date.toLocaleDateString('pt-BR', { month: 'long' });
-        monthYearTitle.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} // ${year}`;
-        
-        calendarGrid.innerHTML = `<p class="col-span-7 text-center">Carregando...</p>`;
-        const events = await fetchEvents(year, month);
-        
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        calendarGrid.innerHTML = '';
-        
-        for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            let dayEvents = events[day] || [];
-            let dayClasses = 'day-number-wrapper';
-            let dayLabel = '';
-
-            if (dayEvents.length > 0) {
-                dayClasses += ` event-${dayEvents[0].type}`;
-                dayLabel = `<div class="day-label">${dayEvents.map(e => e.title).join('<br>')}</div>`;
-            }
-
-            calendarGrid.insertAdjacentHTML('beforeend', `<div class="text-center h-28 flex flex-col justify-start items-center rounded-lg p-2 relative"><div class="${dayClasses}">${day}</div>${dayLabel}</div>`);
-        }
-    }
-    
     function renderTimetable() {
-        const timetableBody = document.getElementById('timetable-body');
-        if (!timetableBody) return;
-        const horarios = [
-            { horario: "1° Aula", segunda: "Arte", terca: "Português", quarta: "Geografia", quinta: "Português", sexta: "Inglês" },
-            { horario: "2° Aula", segunda: "Matemática", terca: "Matemática", quarta: "Geografia", quinta: "Matemática", sexta: "Artes" },
-            { horario: "3° Aula", segunda: "Matemática", terca: "Matemática", quarta: "História", quinta: "Matemática", sexta: "Ciências" },
-            { horario: "4° Aula", segunda: "Português", terca: "Geografia", quarta: "Português", quinta: "Ciências", sexta: "Português" },
-            { horario: "5° Aula", segunda: "História", terca: "Inglês", quarta: "Português", quinta: "Ciências", sexta: "História" }
-        ];
+        if (!timetableBody || !window.siteData || !siteData.horarios) return;
         timetableBody.innerHTML = '';
-        horarios.forEach(row => {
+        siteData.horarios.forEach(row => {
             const rowEl = document.createElement('tr');
-            rowEl.className = "border-b border-slate-800 hover:bg-sky-400/5";
-            rowEl.innerHTML = `<td class="py-3 px-4 font-bold text-white">${row.horario}</td><td>${row.segunda}</td><td>${row.terca}</td><td>${row.quarta}</td><td>${row.quinta}</td><td>${row.sexta}</td>`;
+            rowEl.className = "border-b border-slate-800";
+            rowEl.innerHTML = \`<td class="py-3 px-4 font-bold text-white">\${row.horario}</td><td>\${row.segunda}</td><td>\${row.terca}</td><td>\${row.quarta}</td><td>\${row.quinta}</td><td>\${row.sexta}</td>\`;
             timetableBody.appendChild(rowEl);
         });
     }
-
-    // ---- INICIALIZAÇÃO ----
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
     
-    document.getElementById('prev-month').addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar(currentDate);
-    });
+    function renderCalendar() {
+        const calendarGrid = document.getElementById('calendar-grid');
+        const monthYearTitle = document.getElementById('month-year-title');
+        if (!calendarGrid || !monthYearTitle) return;
 
-    document.getElementById('next-month').addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar(currentDate);
-    });
+        const month = 5, year = 2025; // Junho de 2025
+        monthYearTitle.textContent = 'Junho // 2025';
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        calendarGrid.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            let dayClasses = 'day-number-wrapper';
+            let label = '';
+            if ([13, 16, 17].includes(day)) {
+                dayClasses += ' day-circle-prova-dark';
+                label = '<div class="day-label">Prova<br>Cancelada</div>';
+            } else if ([12, 18, 23, 24, 25, 26, 27].includes(day)) {
+                dayClasses += ' day-circle-prova';
+                label = '<div class="day-label">Prova</div>';
+            } else if (day === 30) {
+                dayClasses += ' day-circle-evento';
+                label = '<div class="day-label">Festa Junina</div>';
+            }
+            calendarGrid.insertAdjacentHTML('beforeend', \`<div class="text-center h-28 flex flex-col justify-start items-center p-2 relative"><div class="\${dayClasses}">\${day}</div>\${label}</div>\`);
+        }
+    }
 
-    renderNews();
-    renderCalendar(currentDate);
-    renderTimetable();
+    if (typeof siteData !== 'undefined') {
+        renderNews();
+        renderTimetable();
+        renderCalendar();
+    } else {
+        if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500 font-bold">ERRO: Arquivo \`jornal-data.js\` não encontrado.</p>';
+    }
 });
 </script>
 </body>
