@@ -1,15 +1,15 @@
-# Configuração de Build Explícita
+# Configuração de Construção Explícita
 [build]
-  # Diz à Netlify que a pasta principal do seu site é esta mesma
+  # Diz à Netlify que os arquivos do seu site estão na pasta principal
   publish = "." 
-  # Diz à Netlify onde encontrar sua pasta de funções
+  # Diz à Netlify onde encontrar a pasta do seu "cofre" (as funções)
   functions = "netlify/functions"
 
-# Regra de Redirecionamento (O "Atalho" Inteligente)
+# Regra de Redirecionamento (O "Atalho" Inteligente e Seguro)
 [[redirects]]
-  # Qualquer chamada para /api/...
+  # Qualquer chamada para /api/alguma-coisa...
   from = "/api/*"
-  # ...será levada para a função correta.
+  # ...será levada para a cozinha correta.
   to = "/.netlify/functions/:splat"
-  # Status 200 faz isso funcionar como um "proxy" seguro.
+  # Status 200 faz isso funcionar como um "proxy".
   status = 200
