@@ -189,6 +189,8 @@
     
     <script src="jornal-data.js"></script> 
 
+<script src="jornal-data.js"></script> 
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- CONSTANTES GLOBAIS ---
@@ -263,22 +265,31 @@
             setTimeout(() => { if (popup.style.display !== 'none') popup.style.display = 'none'; }, 6000);
         }
 
+        // --- LÓGICA DE ESPERA PACIENTE ---
         function initializeContent() {
+            // Esta função só desenha o conteúdo na tela
+            renderNews();
+            renderTimetable();
+            renderCalendar(currentDate);
+        }
+
+        function waitForDataAndInitialize() {
+            // Esta função verifica se `siteData` já chegou. Se não, ela espera 100ms e tenta de novo.
             if (typeof siteData !== 'undefined') {
-                renderNews();
-                renderTimetable();
-                renderCalendar(currentDate);
+                initializeContent(); // Os dados chegaram! Pode inicializar.
             } else {
-                setTimeout(initializeContent, 100);
+                setTimeout(waitForDataAndInitialize, 100); // Dados não chegaram, espere um pouco mais.
             }
         }
 
+        // --- LÓGICA DE LOGIN ---
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
             formMessage.style.display = 'none';
-
+            
+            // Suas informações do Airtable
             const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
             const AIRTABLE_TABLE_ID = 'tblMhy6a1JaEV5Jbe';
             const AIRTABLE_TOKEN = 'pat0lUN8aYFPKqkiw.5d8e87671140fe3692b4b72289c18c87c721b764fca6a5e272895170973311c6';
@@ -286,7 +297,7 @@
             const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
             const dataToSend = { "fields": {
                 "nome_completo": document.getElementById('nome-input').value,
-                "sala": document.getElementById('sala-input').value,
+                "A sala": document.getElementById('sala-input').value,
                 "email": document.getElementById('email-input').value
             }};
 
@@ -297,14 +308,16 @@
                     body: JSON.stringify(dataToSend)
                 });
 
-                if (response.ok) {
+                if (response.ok) { // SUCESSO!
                     loginSection.classList.add('hidden');
                     mainContent.classList.remove('hidden');
                     document.body.classList.remove('no-scroll');
                     window.scrollTo(0, 0);
-                    initializeContent();
+                    
+                    waitForDataAndInitialize(); // <--- AQUI ESTÁ A CORREÇÃO! CHAMANDO A FUNÇÃO DE ESPERA
+                    
                     showWelcomePopup();
-                } else {
+                } else { // ERRO DA API
                     const errorData = await response.json();
                     let errorMessage = `Ocorreu um erro (${response.status}).`;
                     if (errorData.error && errorData.error.message) errorMessage = errorData.error.message;
@@ -312,7 +325,7 @@
                     formMessage.style.color = '#ef4444';
                     formMessage.style.display = 'block';
                 }
-            } catch (error) {
+            } catch (error) { // ERRO DE REDE
                 formMessage.textContent = 'Erro de conexão. Verifique sua internet.';
                 formMessage.style.color = '#ef4444';
                 formMessage.style.display = 'block';
@@ -322,6 +335,7 @@
             }
         });
 
+        // --- LÓGICA DO MENU E CALENDÁRIO ---
         if (mobileMenuButton) mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
         if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
