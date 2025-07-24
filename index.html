@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* ESTILOS GERAIS */
+        /* ESTILOS GERAIS E VISUAIS (100% PRESERVADOS) */
         body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; scroll-behavior: smooth; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
@@ -28,20 +28,11 @@
         .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
         .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
 
-        /* CORREÇÃO BUG DE ROLAGEM: Transforma o login em uma sobreposição total */
-        #login-section {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100; /* Garante que fique acima de tudo */
-        }
-        body.no-scroll {
-            overflow: hidden; /* Impede a rolagem do body enquanto o login está ativo */
-        }
+        /* ESTRATÉGIA DE LOGIN: Bloqueio total da tela */
+        #login-section { position: fixed; inset: 0; z-index: 100; }
+        body.no-scroll { overflow: hidden; }
         
-        /* ANIMAÇÕES PARA O POP-UP */
+        /* ANIMAÇÕES DO POP-UP */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes slideInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -133,14 +124,10 @@
                 <h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase">Jornal 7ºA</h1>
                 <p class="text-lg md:text-xl mt-4 text-slate-300 max-w-2xl mx-auto">As últimas novidades, provas e tudo que acontece na nossa sala.</p>
             </section>
-
             <section class="mb-16" id="noticias">
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-sky-400 pl-4">TRANSMISSÕES RECENTES</h2>
-                <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <p>Carregando notícias...</p>
-                </div>
+                <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </section>
-
             <section class="mb-16" id="calendario">
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-fuchsia-500 pl-4">CRONOGRAMA DE EVENTOS</h2>
                 <div class="glass-card rounded-xl overflow-hidden">
@@ -151,9 +138,7 @@
                             <button id="next-month" class="text-sky-400 hover:text-white transition-colors p-2 rounded-full"><i class="fas fa-chevron-right"></i></button>
                         </div>
                         <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
-                        <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2">
-                            <p class="col-span-7 text-center">Carregando calendário...</p>
-                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"></div>
                     </div>
                     <div id="calendar-legend" class="bg-slate-900/50 px-4 md:px-6 py-3 border-t border-sky-400/20 mt-6 rounded-b-xl">
                          <h4 class="font-bold text-slate-100 mb-2">Legenda:</h4>
@@ -166,14 +151,12 @@
                     </div>
                 </div>
             </section>
-            
             <section class="mb-16" id="horarios">
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-purple-500 pl-4">GRADE DE AULAS</h2>
                 <div class="glass-card rounded-xl overflow-hidden">
                     <div class="overflow-x-auto"><table class="min-w-full"><thead class="border-b border-sky-400/20"><tr><th class="py-3 px-4 font-orbitron">Horário</th><th class="py-3 px-4 font-orbitron">Segunda</th><th class="py-3 px-4 font-orbitron">Terça</th><th class="py-3 px-4 font-orbitron">Quarta</th><th class="py-3 px-4 font-orbitron">Quinta</th><th class="py-3 px-4 font-orbitron">Sexta</th></tr></thead><tbody id="timetable-body" class="text-slate-300"></tbody></table></div>
                 </div>
             </section>
-
             <section class="mb-16" id="sobre-nos">
                 <div class="text-center mb-12">
                     <img src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" alt="Foto da turma 7ºA" class="mx-auto rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-sky-400/40 shadow-xl shadow-sky-500/20">
@@ -187,7 +170,6 @@
                     </div>
                 </div>
             </section>
-
             <section class="mb-16" id="confraternizacao">
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
                 <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">
@@ -211,7 +193,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-
+        // --- CONSTANTES GLOBAIS ---
         const loginSection = document.getElementById('login-section');
         const mainContent = document.getElementById('main-content');
         const loginForm = document.getElementById('login-form');
@@ -227,11 +209,9 @@
         const nextMonthBtn = document.getElementById('next-month');
         let currentDate = new Date();
 
+        // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
         function renderNews() {
-            if (!newsContainer || typeof siteData === 'undefined' || !siteData.noticias) {
-                if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro: Não foi possível carregar as notícias.</p>';
-                return;
-            }
+            if (!newsContainer || !window.siteData || !siteData.noticias) { if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>'; return; }
             newsContainer.innerHTML = '';
             siteData.noticias.slice().reverse().forEach(post => {
                 const postEl = document.createElement('article');
@@ -242,10 +222,7 @@
         }
         
         function renderTimetable() {
-            if (!timetableBody || typeof siteData === 'undefined' || !siteData.horarios) {
-                if(timetableBody) timetableBody.innerHTML = '<tr><td colspan="6" class="text-red-500 text-center p-4">Erro ao carregar horários.</td></tr>';
-                return;
-            }
+            if (!timetableBody || !window.siteData || !siteData.horarios) { if(timetableBody) timetableBody.innerHTML = '<tr><td colspan="6" class="text-red-500 text-center p-4">Erro ao carregar horários.</td></tr>'; return; }
             timetableBody.innerHTML = '';
             siteData.horarios.forEach(row => {
                 const rowEl = document.createElement('tr');
@@ -256,7 +233,7 @@
         }
 
         function renderCalendar(date) {
-            if (!calendarGrid || typeof siteData === 'undefined' || !monthYearTitle) return;
+            if (!calendarGrid || !window.siteData || !monthYearTitle) return;
             const month = date.getMonth();
             const year = date.getFullYear();
             const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -288,28 +265,35 @@
             setTimeout(() => { if (popup.style.display !== 'none') popup.style.display = 'none'; }, 6000);
         }
 
+        // --- LÓGICA DE LOGIN ---
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
             formMessage.style.display = 'none';
 
-            const nome = document.getElementById('nome-input').value;
-            const sala = document.getElementById('sala-input').value;
-            const email = document.getElementById('email-input').value;
+            // --- SUAS INFORMAÇÕES SECRETAS DO AIRTABLE ---
+            // Substitua os 3 valores abaixo pelos seus dados reais.
+            const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; // <-- JÁ PUXEI DOS ERROS ANTERIORES
+            const AIRTABLE_TABLE_NAME_OR_ID = 'tblMhy6a1JaEV5Jbe'; // <-- JÁ PUXEI DOS ERROS ANTERIORES
+            const AIRTABLE_TOKEN = 'pathwSK7lh88x87gb'; // <-- COLE SEU TOKEN AQUI
+            // ---------------------------------------------
 
-            // ***** MUDE AS 2 LINHAS ABAIXO COM SUAS INFORMAÇÕES DO AIRTABLE *****
-          const AIRTABLE_API_URL = 'https://api.airtable.com/v0/app3Z2bJrTyMK2hHz/tblMhy6a1JaEV5Jbe';
-          const AIRTABLE_TOKEN = 'MEU_TOKEN_SECRETO_ESTA_AQUI';
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME_OR_ID}`;
+            const dataToSend = { "fields": {
+                "Nome": document.getElementById('nome-input').value,
+                "Sala": document.getElementById('sala-input').value,
+                "Email": document.getElementById('email-input').value
+            }};
 
             try {
-                const response = await fetch(AIRTABLE_API_URL, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "fields": { "Nome": nome, "Sala": sala, "Email": email } })
+                    body: JSON.stringify(dataToSend)
                 });
 
-                if (response.ok) {
+                if (response.ok) { // SUCESSO!
                     loginSection.classList.add('hidden');
                     mainContent.classList.remove('hidden');
                     document.body.classList.remove('no-scroll');
@@ -318,38 +302,28 @@
                     renderTimetable();
                     renderCalendar(currentDate);
                     showWelcomePopup();
-                } else {
+                } else { // ERRO DA API (401, 404, 422, etc.)
                     const errorData = await response.json();
-                    let errorMessage = `Ocorreu um erro ao cadastrar (${response.status}).`;
+                    let errorMessage = `Ocorreu um erro (${response.status}).`;
                     if (errorData.error && errorData.error.message) errorMessage = errorData.error.message;
                     formMessage.textContent = `Erro: ${errorMessage}`;
                     formMessage.style.color = '#ef4444';
                     formMessage.style.display = 'block';
                 }
-            } catch (error) {
+            } catch (error) { // ERRO DE REDE
                 formMessage.textContent = 'Erro de conexão. Verifique sua internet.';
                 formMessage.style.color = '#ef4444';
                 formMessage.style.display = 'block';
-            } finally {
+            } finally { // ACONTECE SEMPRE (SUCESSO OU ERRO)
                 submitButton.disabled = false;
                 submitButton.textContent = 'Acessar';
             }
         });
 
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-        }
-
-        if(prevMonthBtn && nextMonthBtn) {
-            prevMonthBtn.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar(currentDate);
-            });
-            nextMonthBtn.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar(currentDate);
-            });
-        }
+        // --- LÓGICA DO MENU MOBILE E CALENDÁRIO ---
+        if (mobileMenuButton) mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
+        if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
     });
     </script>
 </body>
