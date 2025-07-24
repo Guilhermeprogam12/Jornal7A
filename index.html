@@ -8,50 +8,51 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
- <style>
-    /* Estilos que você já tinha */
-    body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; scroll-behavior: smooth; }
-    .font-orbitron { font-family: 'Orbitron', sans-serif; }
-    .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
-    .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-    .input-field { background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
-    .input-field:focus { border-color: rgba(56, 189, 248, 0.8); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); outline: none; }
-    .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
-    .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
-    .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
-    .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
-    .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
-    .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
-    .news-content { white-space: pre-line; }
-    .hidden { display: none; }
-
-    /* NOVAS ANIMAÇÕES PARA O POP-UP */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    @keyframes zoomIn {
-        from { transform: scale(0.9); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-    }
-    @keyframes slideInUp {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
     
-    .popup-content > * {
-        opacity: 0; /* Começa invisível para a animação funcionar */
-    }
-    .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    .animate-zoom-in { animation: zoomIn 1s ease-out 0.3s forwards; } 
-    .animate-slide-in-up { animation: slideInUp 0.8s ease-out forwards; }
+    <style>
+        /* ESTILOS GERAIS */
+        body { font-family: 'Exo 2', sans-serif; background-color: #050608; color: #d1d5db; scroll-behavior: smooth; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-card { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .input-field { background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(56, 189, 248, 0.2); transition: all 0.3s ease; }
+        .input-field:focus { border-color: rgba(56, 189, 248, 0.8); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); outline: none; }
+        .news-content { white-space: pre-line; }
+        .hidden { display: none !important; }
 
-</style>
+        /* ESTILOS DO CALENDÁRIO */
+        .day-label { position: absolute; bottom: 4px; left: 0; right: 0; font-size: 0.7rem; font-weight: bold; line-height: 1; text-align: center; padding: 0 2px; }
+        .day-number-wrapper { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 1; }
+        .event-prova { background-color: rgba(236, 72, 153, 0.8); color: #fff; border: 1px solid #ec4899; }
+        .event-prova-cancelada { background-color: #be185d; color: #fff; font-weight: bold; border: 1px solid #ec4899; }
+        .event-evento { background-color: rgba(168, 85, 247, 0.8); color: #fff; border: 1px solid #a855f7; }
+        .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
+
+        /* CORREÇÃO BUG DE ROLAGEM: Transforma o login em uma sobreposição total */
+        #login-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100; /* Garante que fique acima de tudo */
+        }
+        body.no-scroll {
+            overflow: hidden; /* Impede a rolagem do body enquanto o login está ativo */
+        }
+        
+        /* ANIMAÇÕES PARA O POP-UP */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideInUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .popup-content > * { opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-zoom-in { animation: zoomIn 1s ease-out 0.3s forwards; } 
+        .animate-slide-in-up { animation: slideInUp 0.8s ease-out forwards; }
+    </style>
 </head>
 
-<body class="bg-black">
-
-    <div id="login-section" class="flex items-center justify-center min-h-screen p-4">
+<body class="bg-black no-scroll"> <div id="login-section" class="flex items-center justify-center p-4">
         <div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
             <div class="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
             <div class="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(0,178,255,.15),rgba(255,255,255,0))]"></div>
@@ -62,13 +63,12 @@
                 <h1 class="font-orbitron text-3xl font-bold text-white">Acesso ao Jornal</h1>
                 <p class="text-slate-400">Faça seu login ou cadastre-se para continuar</p>
             </div>
-            
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="nome-input" class="text-sm font-bold text-slate-300 block mb-2">Nome Completo</label>
                     <input id="nome-input" name="nome" type="text" required placeholder="Seu nome completo" class="input-field w-full px-4 py-2 text-white rounded-lg focus:ring-sky-500">
                 </div>
-                 <div>
+                <div>
                     <label for="sala-input" class="text-sm font-bold text-slate-300 block mb-2">Sua Sala</label>
                     <input id="sala-input" name="sala" type="text" required placeholder="Ex: 7ºA" class="input-field w-full px-4 py-2 text-white rounded-lg focus:ring-sky-500">
                 </div>
@@ -84,29 +84,41 @@
         </div>
     </div>
 
-   <div id="login-section" class="flex items-center justify-center min-h-screen p-4">
-    </div>
-
-
-<div id="main-content" class="hidden">
-
-    <div id="welcome-popup" style="display: none;" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
-        <div class="popup-content bg-slate-800 rounded-2xl shadow-2xl w-11/12 max-w-2xl p-4 relative border-2 border-sky-500/50">
-            <img src="volta-as-aulas.png" alt="Banner de Volta às Aulas" class="w-full rounded-xl mb-4 animate-zoom-in">
-            <h2 class="font-orbitron text-2xl md:text-3xl font-bold text-white text-center mb-2 animate-slide-in-up" style="animation-delay: 0.8s;">BEM-VINDOS DE VOLTA!</h2>
-            <p class="text-slate-300 text-center mb-6 animate-slide-in-up" style="animation-delay: 1s;">O Jornal 7ºA deseja a todos um ótimo segundo semestre!</p>
-            <button id="close-popup" class="absolute -top-4 -right-4 bg-sky-500 text-white rounded-full h-10 w-10 flex items-center justify-center text-2xl font-bold border-2 border-slate-800 hover:bg-sky-400 transition-transform duration-200 hover:scale-110">
-                &times;
-            </button>
+    <div id="main-content" class="hidden">
+        
+        <div id="welcome-popup" style="display: none;" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+            <div class="popup-content bg-slate-800 rounded-2xl shadow-2xl w-11/12 max-w-2xl p-4 relative border-2 border-sky-500/50">
+                <img src="volta-as-aulas.png" alt="Banner de Volta às Aulas" class="w-full rounded-xl mb-4 animate-zoom-in">
+                <h2 class="font-orbitron text-2xl md:text-3xl font-bold text-white text-center mb-2 animate-slide-in-up" style="animation-delay: 0.8s;">BEM VINDOS DE VOLTA!</h2>
+                <p class="text-slate-300 text-center mb-6 animate-slide-in-up" style="animation-delay: 1s;">O Jornal 7ºA deseja a todos um ótimo segundo semestre!</p>
+                <button id="close-popup" class="absolute -top-4 -right-4 bg-sky-500 text-white rounded-full h-10 w-10 flex items-center justify-center text-2xl font-bold border-2 border-slate-800 hover:bg-sky-400 transition-transform duration-200 hover:scale-110">
+                    &times;
+                </button>
+            </div>
         </div>
-    </div>
-    <header>
-        </header>
-    <main>
-        </main>
-    <footer>
-        </footer>
-</div>
+
+        <header class="bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50 border-b border-sky-400/20">
+            <div class="container mx-auto px-4">
+                <nav class="flex justify-between items-center py-4">
+                    <a href="#"><img src="image_1352a2.png" alt="Logo Jornal 7ºA" class="h-10"></a>
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#noticias" class="text-slate-300 hover:text-sky-400 transition-colors">Notícias</a>
+                        <a href="#calendario" class="text-slate-300 hover:text-sky-400 transition-colors">Calendário</a>
+                        <a href="#horarios" class="text-slate-300 hover:text-sky-400 transition-colors">Horários</a>
+                        <a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a>
+                    </div>
+                    <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-lg">
+                        <i class="fab fa-instagram text-xl mr-2"></i> Instagram
+                    </a>
+                    <button id="mobile-menu-button" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
+                </nav>
+                <div id="mobile-menu" class="hidden md:hidden py-4">
+                    <a href="#noticias" class="block text-slate-300 hover:text-sky-400 py-2">Notícias</a>
+                    <a href="#calendario" class="block text-slate-300 hover:text-sky-400 py-2">Calendário</a>
+                    <a href="#horarios" class="block text-slate-300 hover:text-sky-400 py-2">Horários</a>
+                    <a href="#sobre-nos" class="block text-slate-300 hover:text-sky-400 py-2">Sobre Nós</a>
+                </div>
+            </div>
         </header>
 
         <div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
@@ -192,309 +204,133 @@
             </div>
         </footer>
     </div>
+    
+    <script src="jornal-data.js"></script> 
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        const AIRTABLE_API_KEY = 'pathwSK7lh88x87gb.deb0e1ecd86f27327c4b209217dbd610cc931203852923c9d1241d73695e118b'; 
-        const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; 
-        const CADASTRO_TABLE_NAME = 'Cadastro';
-        
-        const EMAIL_FIELD_NAME = 'email';
-        const NOME_FIELD_NAME = 'nome_completo';
-        const SALA_FIELD_NAME = 'sala';
+    document.addEventListener('DOMContentLoaded', () => {
 
+        // --- CONSTANTES GLOBAIS ---
         const loginSection = document.getElementById('login-section');
         const mainContent = document.getElementById('main-content');
         const loginForm = document.getElementById('login-form');
-        const formMessage = document.getElementById('form-message');
-        const submitButton = document.getElementById('submit-button');
-        
-        const emailInput = document.getElementById('email-input');
-        const nomeInput = document.getElementById('nome-input');
-        const salaInput = document.getElementById('sala-input');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const newsContainer = document.getElementById('news-container');
+        const timetableBody = document.getElementById('timetable-body');
+        const calendarGrid = document.getElementById('calendar-grid');
+        const monthYearTitle = document.getElementById('month-year-title');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
 
-        function showMainContent() {
-            loginSection.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            // Agora que o login foi feito, carregamos o conteúdo do site
-            initializeSiteContent();
-        }
+        let currentDate = new Date();
 
-        loginForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const email = emailInput.value.trim().toLowerCase();
-            const nome = nomeInput.value.trim();
-            const sala = salaInput.value.trim();
-
-            if (!email || !nome || !sala) {
-                formMessage.textContent = 'Por favor, preencha todos os campos.';
-                formMessage.style.color = '#f87171';
-                formMessage.style.display = 'block';
+        // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
+        function renderNews() {
+            if (!newsContainer || typeof siteData === 'undefined' || !siteData.noticias) {
+                if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro: Não foi possível carregar as notícias.</p>';
                 return;
             }
-
-            submitButton.disabled = true;
-            submitButton.textContent = 'Verificando...';
-            formMessage.style.display = 'none';
-
-            const checkUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(CADASTRO_TABLE_NAME)}?filterByFormula=({${EMAIL_FIELD_NAME}} = '${email}')`;
-
-            try {
-                const checkResponse = await fetch(checkUrl, {
-                    headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
-                });
-                
-                if (!checkResponse.ok) {
-                    const errorData = await checkResponse.json();
-                    throw new Error(`Erro ao verificar: ${errorData.error.message || 'Verifique as chaves e nomes.'}`);
-                }
-
-                const checkData = await checkResponse.json();
-
-                if (checkData.records && checkData.records.length > 0) {
-                    formMessage.textContent = 'Login efetuado com sucesso. Redirecionando...';
-                    formMessage.style.color = '#34d399';
-                    formMessage.style.display = 'block';
-                    setTimeout(showMainContent, 1500);
-
-                } else {
-                    const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(CADASTRO_TABLE_NAME)}`;
-                    
-                    const fieldsToCreate = {};
-                    fieldsToCreate[EMAIL_FIELD_NAME] = email;
-                    fieldsToCreate[NOME_FIELD_NAME] = nome;
-                    fieldsToCreate[SALA_FIELD_NAME] = sala;
-                    
-                    const createResponse = await fetch(createUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            "records": [{ "fields": fieldsToCreate }]
-                        })
-                    });
-
-                    if (!createResponse.ok) {
-                        const errorData = await createResponse.json();
-                        throw new Error(`Erro ao cadastrar: ${errorData.error.message || 'Verifique os nomes das colunas.'}`);
-                    }
-
-                    formMessage.textContent = 'Cadastro realizado com sucesso! Redirecionando...';
-                    formMessage.style.color = '#34d399';
-                    formMessage.style.display = 'block';
-                    setTimeout(showMainContent, 1500);
-                }
-            } catch (error) {
-                console.error('--- DETALHES DO ERRO ---', error);
-                formMessage.textContent = error.message;
-                formMessage.style.color = '#f87171';
-                formMessage.style.display = 'block';
-                submitButton.disabled = false;
-                submitButton.textContent = 'Acessar';
-            }
-        });
-
-        // ---- FUNÇÕES PARA CARREGAR O CONTEÚDO DO SITE ----
-        function initializeSiteContent() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-            }
-            
-            let currentDate = new Date();
-            const prevMonthButton = document.getElementById('prev-month');
-            const nextMonthButton = document.getElementById('next-month');
-
-            if (prevMonthButton) {
-                prevMonthButton.addEventListener('click', () => {
-                    currentDate.setMonth(currentDate.getMonth() - 1);
-                    renderCalendar(currentDate);
-                });
-            }
-
-            if (nextMonthButton) {
-                nextMonthButton.addEventListener('click', () => {
-                    currentDate.setMonth(currentDate.getMonth() + 1);
-                    renderCalendar(currentDate);
-                });
-            }
-            
-            renderNews();
-            renderCalendar(currentDate);
-            renderTimetable();
-        }
-
-        function renderNews() {
-            const newsContainer = document.getElementById('news-container');
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Noticias?sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc`;
-
-            fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } })
-            .then(response => response.json())
-            .then(data => {
-                newsContainer.innerHTML = '';
-                if (data.records && data.records.length > 0) {
-                    data.records.forEach(record => {
-                        const post = record.fields;
-                        const formattedContent = (post.content || '').replace(/\n/g, '<br>');
-                        const postEl = document.createElement('article');
-                        postEl.className = 'glass-card rounded-xl overflow-hidden';
-                        postEl.innerHTML = `
-                            <div class="p-6">
-                                <div class="flex items-center text-sm text-slate-400 mb-3">
-                                    <span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category ? post.category.toUpperCase() : 'GERAL'}</span><span class="mx-2">•</span><span>${post.date ? new Date(post.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : 'Sem Data'}</span>
-                                </div>
-                                <h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title || 'Sem Título'}</h3>
-                                <p class="text-slate-300 font-light news-content">${formattedContent}</p>
-                            </div>`;
-                        newsContainer.appendChild(postEl);
-                    });
-                } else { 
-                    newsContainer.innerHTML = '<p class="text-slate-400">Nenhuma notícia recente encontrada.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao buscar notícias do Airtable:', error);
-                newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias.</p>';
+            newsContainer.innerHTML = '';
+            siteData.noticias.slice().reverse().forEach(post => {
+                const postEl = document.createElement('article');
+                postEl.className = 'glass-card rounded-xl overflow-hidden';
+                postEl.innerHTML = `
+                    <div class="p-6"><div class="flex items-center text-sm text-slate-400 mb-3"><span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category.toUpperCase()}</span><span class="mx-2">•</span><span>${new Date(post.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span></div><h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title}</h3><p class="text-slate-300 font-light news-content">${post.content}</p></div>`;
+                newsContainer.appendChild(postEl);
             });
-        }
-
-        async function renderCalendar(date) {
-            const monthYearTitle = document.getElementById('month-year-title');
-            const calendarGrid = document.getElementById('calendar-grid');
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const monthName = date.toLocaleDateString('pt-BR', { month: 'long' });
-            monthYearTitle.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} // ${year}`;
-            
-            calendarGrid.innerHTML = `<p class="col-span-7 text-center">Carregando...</p>`;
-            
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario`;
-            let events = {};
-            try {
-                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
-                const data = await response.json();
-                if (data.records) {
-                    data.records.forEach(record => {
-                        const eventDate = new Date(record.fields.event_date);
-                        if (eventDate.getUTCFullYear() === year && eventDate.getUTCMonth() === month) {
-                            const day = eventDate.getUTCDate();
-                            if (!events[day]) events[day] = [];
-                            events[day].push({
-                                title: record.fields.event_title,
-                                type: (record.fields.event_type || '').replace(/\s+/g, '-').toLowerCase()
-                            });
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Erro ao buscar eventos:', error);
-            }
-            
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            calendarGrid.innerHTML = '';
-            
-            for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                let dayEvents = events[day] || [];
-                let dayClasses = 'day-number-wrapper';
-                let dayLabel = '';
-
-                if (dayEvents.length > 0) {
-                    dayClasses += ` event-${dayEvents[0].type}`;
-                    dayLabel = `<div class="day-label">${dayEvents.map(e => e.title).join('<br>')}</div>`;
-                }
-                calendarGrid.insertAdjacentHTML('beforeend', `<div class="text-center h-28 flex flex-col justify-start items-center rounded-lg p-2 relative"><div class="${dayClasses}">${day}</div>${dayLabel}</div>`);
-            }
         }
         
         function renderTimetable() {
-            const timetableBody = document.getElementById('timetable-body');
-            if (!timetableBody) return;
-            const horarios = [
-                { horario: "1° Aula", segunda: "Arte", terca: "Português", quarta: "Geografia", quinta: "Português", sexta: "Inglês" },
-                { horario: "2° Aula", segunda: "Matemática", terca: "Matemática", quarta: "Geografia", quinta: "Matemática", sexta: "Artes" },
-                { horario: "3° Aula", segunda: "Matemática", terca: "Matemática", quarta: "História", quinta: "Matemática", sexta: "Ciências" },
-                { horario: "4° Aula", segunda: "Português", terca: "Geografia", quarta: "Português", quinta: "Ciências", sexta: "Português" },
-                { horario: "5° Aula", segunda: "História", terca: "Inglês", quarta: "Português", quinta: "Ciências", sexta: "História" }
-            ];
+            if (!timetableBody || typeof siteData === 'undefined' || !siteData.horarios) {
+                if(timetableBody) timetableBody.innerHTML = '<tr><td colspan="6" class="text-red-500 text-center p-4">Erro ao carregar horários.</td></tr>';
+                return;
+            }
             timetableBody.innerHTML = '';
-            horarios.forEach(row => {
+            siteData.horarios.forEach(row => {
                 const rowEl = document.createElement('tr');
-                rowEl.className = "border-b border-slate-800 hover:bg-sky-400/5";
+                rowEl.className = "border-b border-slate-800";
                 rowEl.innerHTML = `<td class="py-3 px-4 font-bold text-white">${row.horario}</td><td>${row.segunda}</td><td>${row.terca}</td><td>${row.quarta}</td><td>${row.quinta}</td><td>${row.sexta}</td>`;
                 timetableBody.appendChild(rowEl);
             });
         }
-    });
-    </script>
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
 
-    // --- SEÇÃO DE LOGIN ---
-    const loginSection = document.getElementById('login-section');
-    const mainContent = document.getElementById('main-content');
-    const loginForm = document.getElementById('login-form');
-    const formMessage = document.getElementById('form-message');
+        function renderCalendar(date) {
+            if (!calendarGrid || typeof siteData === 'undefined' || !monthYearTitle) return;
+            
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            monthYearTitle.textContent = `${monthNames[month]} // ${year}`;
+            
+            calendarGrid.innerHTML = '';
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    loginForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Impede o envio real do formulário
-        
-        // Aqui você colocaria sua lógica de verificação com o Airtable
-        // Por enquanto, vamos simular um login bem-sucedido
-        
-        // Esconde a tela de login
-        loginSection.classList.add('hidden');
-        
-        // Mostra o conteúdo principal
-        mainContent.classList.remove('hidden');
+            for (let i = 0; i < firstDay; i++) {
+                calendarGrid.insertAdjacentHTML('beforeend', '<div></div>');
+            }
 
-        // CHAMA A FUNÇÃO PARA MOSTRAR O POP-UP ANIMADO
-        showWelcomePopup();
-    });
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dayClasses = 'day-number-wrapper';
+                let label = '';
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                const event = siteData.eventos ? siteData.eventos.find(e => e.date === dateStr) : null;
+                if (event) {
+                    dayClasses += ` event-${event.type}`;
+                    label = `<div class="day-label">${event.title}</div>`;
+                }
 
-    // --- SEÇÃO DO POP-UP DE BOAS-VINDAS ---
-    function showWelcomePopup() {
-        const popup = document.getElementById('welcome-popup');
-        const closeButton = document.getElementById('close-popup');
+                calendarGrid.insertAdjacentHTML('beforeend', `<div class="text-center h-20 flex flex-col justify-start items-center p-1 relative"><div class="${dayClasses}">${day}</div>${label}</div>`);
+            }
+        }
 
-        if (!popup || !closeButton) return;
+        // --- FUNÇÃO DO POP-UP DE BOAS-VINDAS ---
+        function showWelcomePopup() {
+            const popup = document.getElementById('welcome-popup');
+            const closeButton = document.getElementById('close-popup');
+            if (!popup || !closeButton) return;
+            popup.style.display = 'flex';
+            popup.classList.add('animate-fade-in');
+            closeButton.addEventListener('click', () => popup.style.display = 'none');
+            setTimeout(() => { if (popup.style.display !== 'none') popup.style.display = 'none'; }, 6000);
+        }
 
-        // Mostra o pop-up com a animação
-        popup.style.display = 'flex';
-        popup.classList.add('animate-fade-in');
-
-        closeButton.addEventListener('click', () => {
-            popup.style.display = 'none';
+        // --- LÓGICA PRINCIPAL ---
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            // AQUI VAI SUA LÓGICA DE VALIDAÇÃO DO AIRTABLE
+            const loginSuccess = true; 
+            if (loginSuccess) {
+                loginSection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                document.body.classList.remove('no-scroll');
+                window.scrollTo(0, 0);
+                renderNews();
+                renderTimetable();
+                renderCalendar(currentDate);
+                showWelcomePopup();
+            }
         });
 
-        // Fecha o pop-up automaticamente após 5 segundos
-        setTimeout(() => {
-            if (popup.style.display !== 'none') {
-                popup.style.display = 'none';
-            }
-        }, 5000); // 5 segundos
-    }
+        // Lógica do Menu Mobile
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        }
 
-    // --- SEÇÃO DE NOTÍCIAS, CALENDÁRIO, ETC (SEU CÓDIGO RESTANTE) ---
-    // Coloque aqui o restante do seu JavaScript que carrega as notícias, o calendário, etc.
-    // Exemplo:
-    // const newsContainer = document.getElementById('news-container');
-    // if(newsContainer) { ... }
-    
-    // Menu mobile
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (mobileMenuButton) {
-        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-    }
-
-});
-</script>
+        // Lógica de Navegação do Calendário
+        if(prevMonthBtn && nextMonthBtn) {
+            prevMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar(currentDate);
+            });
+            nextMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar(currentDate);
+            });
+        }
+    });
+    </script>
 </body>
 </html>
