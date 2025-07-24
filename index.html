@@ -272,14 +272,13 @@
             submitButton.textContent = 'Enviando...';
             formMessage.style.display = 'none';
 
-            // --- SUAS INFORMAÇÕES SECRETAS DO AIRTABLE ---
-            // Substitua os 3 valores abaixo pelos seus dados reais.
-            const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; // <-- JÁ PUXEI DOS ERROS ANTERIORES
-            const AIRTABLE_TABLE_NAME_OR_ID = 'tblMhy6a1JaEV5Jbe'; // <-- JÁ PUXEI DOS ERROS ANTERIORES
-            const AIRTABLE_TOKEN = 'pathwSK7lh88x87gb'; // <-- COLE SEU TOKEN AQUI
-            // ---------------------------------------------
+            // --- SUAS INFORMAÇÕES DO AIRTABLE ---
+            const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
+            const AIRTABLE_TABLE_ID = 'tblMhy6a1JaEV5Jbe';
+            const AIRTABLE_TOKEN = 'pat0lUN8aYFPKqkiw.5d8e87671140fe3692b4b72289c18c87c721b764fca6a5e272895170973311c6'; 
+            // ------------------------------------
 
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME_OR_ID}`;
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
             const dataToSend = { "fields": {
                 "Nome": document.getElementById('nome-input').value,
                 "Sala": document.getElementById('sala-input').value,
