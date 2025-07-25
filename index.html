@@ -186,9 +186,8 @@
             </div>
         </footer>
     </div>
-
-
-<script src="jornal-data.js"></script> 
+    
+    <script src="jornal-data.js"></script> 
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -210,7 +209,7 @@
 
         // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
         function renderNews() {
-            if (!newsContainer || || !siteData.noticias) { if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>'; return; }
+            if (!newsContainer || !window.siteData || !siteData.noticias) { if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>'; return; }
             newsContainer.innerHTML = '';
             siteData.noticias.slice().reverse().forEach(post => {
                 const postEl = document.createElement('article');
@@ -266,18 +265,12 @@
 
         // --- LÓGICA DE ESPERA PACIENTE ---
         function initializeContent() {
-            // Esta função só desenha o conteúdo na tela
-            renderNews();
-            renderTimetable();
-            renderCalendar(currentDate);
-        }
-
-        function waitForDataAndInitialize() {
-            // Esta função verifica se `siteData` já chegou. Se não, ela espera 100ms e tenta de novo.
             if (typeof siteData !== 'undefined') {
-                initializeContent(); // Os dados chegaram! Pode inicializar.
+                renderNews();
+                renderTimetable();
+                renderCalendar(currentDate);
             } else {
-                setTimeout(waitForDataAndInitialize, 100); // Dados não chegaram, espere um pouco mais.
+                setTimeout(initializeContent, 100);
             }
         }
 
@@ -287,17 +280,19 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
             formMessage.style.display = 'none';
-            
-            // Suas informações do Airtable
+
+            // --- SUAS INFORMAÇÕES DO AIRTABLE ---
             const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
             const AIRTABLE_TABLE_ID = 'tblMhy6a1JaEV5Jbe';
-            const AIRTABLE_TOKEN = 'pat0lUN8aYFPKqkiw.5d8e87671140fe3692b4b72289c18c87c721b764fca6a5e272895170973311c6';
+            const AIRTABLE_TOKEN = 'SEU_TOKEN_AQUI'; // <-- COLE SEU TOKEN NOVO E SEGURO AQUI
 
             const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
+            
+            // --- NOMES DAS COLUNAS CORRIGIDOS DE ACORDO COM SEU PRINT ---
             const dataToSend = { "fields": {
                 "nome_completo": document.getElementById('nome-input').value,
-                "sala": document.getElementById('sala-input').value,
-                "email": document.getElementById('email-input').value
+                "email": document.getElementById('email-input').value,
+                "sala": document.getElementById('sala-input').value
             }};
 
             try {
@@ -312,9 +307,7 @@
                     mainContent.classList.remove('hidden');
                     document.body.classList.remove('no-scroll');
                     window.scrollTo(0, 0);
-                    
-                    waitForDataAndInitialize(); // <--- AQUI ESTÁ A CORREÇÃO! CHAMANDO A FUNÇÃO DE ESPERA
-                    
+                    initializeContent();
                     showWelcomePopup();
                 } else { // ERRO DA API
                     const errorData = await response.json();
