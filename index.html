@@ -211,7 +211,7 @@
 
         // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
         function renderNews() {
-            if (!newsContainer || !window.siteData || !siteData.noticias) { if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>'; return; }
+            if (!newsContainer || || !siteData.noticias) { if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>'; return; }
             newsContainer.innerHTML = '';
             siteData.noticias.slice().reverse().forEach(post => {
                 const postEl = document.createElement('article');
