@@ -14,5 +14,35 @@ const siteData = {
             "date": "2025-02-14",
             "content": "A partir do dia 14 de fevereiro, Ana Maria Alvares assumiu oficialmente o cargo de diretora da nossa escola. A comunidade escolar recebe com entusiasmo essa nova liderança."
         }
+    ],
+    "horarios": [
+        { 
+            "horario": "1° Aula", 
+            "segunda": "Arte", 
+            "terca": "Português", 
+            "quarta": "Geografia", 
+            "quinta": "Português", 
+            "sexta": "Inglês" 
+        },
+        { 
+            "horario": "2° Aula", 
+            "segunda": "Matemática", 
+            "terca": "Matemática", 
+            "quarta": "Geografia", 
+            "quinta": "Matemática", 
+            "sexta": "Artes" 
+        }
+    ],
+    "eventos": [
+        { 
+            "date": "2025-08-11", 
+            "title": "Dia do Estudante", 
+            "type": "evento" 
+        },
+        { 
+            "date": "2025-09-07", 
+            "title": "Feriado", 
+            "type": "feriado" 
+        }
     ]
 };
