@@ -263,7 +263,6 @@
             setTimeout(() => { if (popup.style.display !== 'none') popup.style.display = 'none'; }, 6000);
         }
 
-        // --- LÓGICA DE ESPERA PACIENTE ---
         function initializeContent() {
             if (typeof siteData !== 'undefined') {
                 renderNews();
@@ -274,32 +273,29 @@
             }
         }
 
-        // --- LÓGICA DE LOGIN ---
+        // LÓGICA DE LOGIN SEGURA, USANDO O "COFRE" DO NETLIFY
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
             formMessage.style.display = 'none';
 
-            // --- SUAS INFORMAÇÕES DO AIRTABLE ---
-            const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
-            const AIRTABLE_TABLE_ID = 'tblMhy6a1JaEV5Jbe';
-            const AIRTABLE_TOKEN = 'patAgdtuwIx6WkPzC'; // <-- COLE SEU TOKEN NOVO E SEGURO AQUI
-
-
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
+            // Endereço do nosso "garçom" (a Netlify Function)
+            const url = `/.netlify/functions/submit-form`;
             
-            // --- NOMES DAS COLUNAS CORRIGIDOS DE ACORDO COM SEU PRINT ---
-            const dataToSend = { "fields": {
-                "nome_completo": document.getElementById('nome-input').value,
-                "email": document.getElementById('email-input').value,
-                "sala": document.getElementById('sala-input').value
-            }};
+            // Empacota os dados para enviar ao "garçom"
+            const dataToSend = {
+                baseId: 'app3Z2bJrTyMK2hHz',
+                tableId: 'tblMhy6a1JaEV5Jbe',
+                nome: document.getElementById('nome-input').value,
+                sala: document.getElementById('sala-input').value,
+                email: document.getElementById('email-input').value
+            };
 
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}`, 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dataToSend)
                 });
 
@@ -310,7 +306,7 @@
                     window.scrollTo(0, 0);
                     initializeContent();
                     showWelcomePopup();
-                } else { // ERRO DA API
+                } else { // ERRO (o "garçom" nos trouxe uma má notícia)
                     const errorData = await response.json();
                     let errorMessage = `Ocorreu um erro (${response.status}).`;
                     if (errorData.error && errorData.error.message) errorMessage = errorData.error.message;
@@ -328,7 +324,7 @@
             }
         });
 
-        // --- LÓGICA DO MENU E CALENDÁRIO ---
+        // LÓGICA DO MENU E CALENDÁRIO
         if (mobileMenuButton) mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         if(prevMonthBtn) prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
         if(nextMonthBtn) nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
