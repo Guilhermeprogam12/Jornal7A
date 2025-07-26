@@ -3,39 +3,4 @@ const siteData = {
         {
             "id": 1,
             "title": "Professora Rita Herrera é a representante do 7°A Desidério",
-            "category": "Professores",
-            "date": "2025-02-10",
-            "content": "A professora Rita Herrera foi oficialmente anunciada como a professora representante da nossa turma, o 7°A Desidério. Com vasta experiência, ela trará novas perspectivas para nosso aprendizado."
-        },
-        {
-            "id": 2,
-            "title": "Ana Maria Alvares anunciada como nova diretora",
-            "category": "Administração",
-            "date": "2025-02-14",
-            "content": "A partir do dia 14 de fevereiro, Ana Maria Alvares assumiu oficialmente o cargo de diretora da nossa escola. A comunidade escolar recebe com entusiasmo essa nova liderança."
-        },
-        {
-            "id": 3,
-            "title": "Conselho de Classe elege representantes",
-            "category": "Democracia",
-            "date": "2025-03-05",
-            "content": "Em assembleia democrática, foram eleitos os representantes da turma: Guilherme Lucas, Alice Sarah e Lavinia Zamoner como líderes, e Isac Felipe e Matheus Kenji como suplentes."
-        }
-    ],
-    "horarios": [
-        { 
-            "horario": "1° Aula", "segunda": "Arte", "terca": "Português", "quarta": "Geografia", "quinta": "Português", "sexta": "Inglês" 
-        },
-        { 
-            "horario": "2° Aula", "segunda": "Matemática", "terca": "Matemática", "quarta": "Geografia", "quinta": "Matemática", "sexta": "Artes" 
-        }
-    ],
-    "eventos": [
-        { 
-            "date": "2025-08-11", "title": "Dia do Estudante", "type": "evento" 
-        },
-        { 
-            "date": "2025-09-07", "title": "Feriado", "type": "feriado" 
-        }
-    ]
-};
+            "
