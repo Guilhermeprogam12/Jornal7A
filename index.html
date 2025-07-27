@@ -23,8 +23,8 @@
         .event-feriado { background-color: rgba(5, 150, 105, 0.8); color: #fff; border: 1px solid #059669; }
         .news-content { white-space: pre-line; }
         .hidden { display: none; }
-
-        /* --- CÓDIGO DA ANIMAÇÃO ADICIONADO AQUI --- */
+        #login-section { position: fixed; inset: 0; z-index: 100; }
+        body.no-scroll { overflow: hidden; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .popup-content > * { opacity: 0; }
@@ -33,7 +33,7 @@
     </style>
 </head>
 
-<body class="bg-black">
+<body class="bg-black no-scroll">
 
     <div id="login-section" class="flex items-center justify-center min-h-screen p-4">
         <div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
@@ -48,11 +48,11 @@
             </div>
             
             <form id="login-form" class="space-y-4">
-                <div><label for="nome-input" class="text-sm font-bold text-slate-300 block mb-2">Nome Completo</label><input id="nome-input" name="nome" type="text" required placeholder="Seu nome completo" class="input-field w-full px-4 py-2 text-white rounded-lg focus:ring-sky-500"></div>
-                <div><label for="sala-input" class="text-sm font-bold text-slate-300 block mb-2">Sua Sala</label><input id="sala-input" name="sala" type="text" required placeholder="Ex: 7ºA" class="input-field w-full px-4 py-2 text-white rounded-lg focus:ring-sky-500"></div>
-                <div><label for="email-input" class="text-sm font-bold text-slate-300 block mb-2">Seu E-mail</label><input id="email-input" name="email" type="email" required placeholder="exemplo@email.com" class="input-field w-full px-4 py-2 text-white rounded-lg focus:ring-sky-500"></div>
+                <div><label for="nome-input" class="text-sm font-bold text-slate-300 block mb-2">Nome Completo</label><input id="nome-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                <div><label for="sala-input" class="text-sm font-bold text-slate-300 block mb-2">Sua Sala</label><input id="sala-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                <div><label for="email-input" class="text-sm font-bold text-slate-300 block mb-2">Seu E-mail</label><input id="email-input" type="email" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
                 <p id="form-message" class="text-center text-base" style="display: none;"></p>
-                <div class="pt-2"><button type="submit" id="submit-button" class="w-full font-bold py-3 px-4 bg-sky-600 hover:bg-sky-500 rounded-lg text-white transition-all duration-300">Acessar</button></div>
+                <div class="pt-2"><button type="submit" id="submit-button" class="w-full font-bold py-3 px-4 bg-sky-600 hover:bg-sky-500 rounded-lg text-white">Acessar</button></div>
             </form>
         </div>
     </div>
@@ -69,8 +69,8 @@
             <div class="container mx-auto px-4">
                 <nav class="flex justify-between items-center py-4">
                     <a href="#"><img src="image_1352a2.png" alt="Logo Jornal 7ºA" class="h-10"></a>
-                    <div class="hidden md:flex items-center space-x-8"><a href="#noticias" class="text-slate-300 hover:text-sky-400 transition-colors">Notícias</a><a href="#calendario" class="text-slate-300 hover:text-sky-400 transition-colors">Calendário</a><a href="#horarios" class="text-slate-300 hover:text-sky-400 transition-colors">Horários</a><a href="#sobre-nos" class="text-slate-300 hover:text-sky-400 transition-colors">Sobre Nós</a></div>
-                    <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 shadow-lg"><i class="fab fa-instagram text-xl mr-2"></i> Instagram</a>
+                    <div class="hidden md:flex items-center space-x-8"><a href="#noticias" class="text-slate-300 hover:text-sky-400">Notícias</a><a href="#calendario" class="text-slate-300 hover:text-sky-400">Calendário</a><a href="#horarios" class="text-slate-300 hover:text-sky-400">Horários</a><a href="#sobre-nos" class="text-slate-300 hover:text-sky-400">Sobre Nós</a></div>
+                    <a href="https://www.instagram.com/7a_desiderio_2025_/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold py-2 px-4 rounded-full"><i class="fab fa-instagram text-xl mr-2"></i> Instagram</a>
                     <button id="mobile-menu-button" class="md:hidden text-white"><i class="fas fa-bars text-2xl"></i></button>
                 </nav>
                 <div id="mobile-menu" class="hidden md:hidden py-4"><a href="#noticias" class="block text-slate-300 hover:text-sky-400 py-2">Notícias</a><a href="#calendario" class="block text-slate-300 hover:text-sky-400 py-2">Calendário</a><a href="#horarios" class="block text-slate-300 hover:text-sky-400 py-2">Horários</a><a href="#sobre-nos" class="block text-slate-300 hover:text-sky-400 py-2">Sobre Nós</a></div>
@@ -89,7 +89,7 @@
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-fuchsia-500 pl-4">CRONOGRAMA DE EVENTOS</h2>
                 <div class="glass-card rounded-xl overflow-hidden">
                     <div class="p-4 md:p-6">
-                        <div class="flex justify-between items-center mb-6"><button id="prev-month" class="text-sky-400 hover:text-white transition-colors p-2 rounded-full"><i class="fas fa-chevron-left"></i></button><h3 id="month-year-title" class="text-xl font-bold text-white font-orbitron"></h3><button id="next-month" class="text-sky-400 hover:text-white transition-colors p-2 rounded-full"><i class="fas fa-chevron-right"></i></button></div>
+                        <div class="flex justify-between items-center mb-6"><button id="prev-month" class="text-sky-400 hover:text-white p-2 rounded-full"><i class="fas fa-chevron-left"></i></button><h3 id="month-year-title" class="text-xl font-bold text-white font-orbitron"></h3><button id="next-month" class="text-sky-400 hover:text-white p-2 rounded-full"><i class="fas fa-chevron-right"></i></button></div>
                         <div class="grid grid-cols-7 gap-1 text-center font-bold text-slate-400 mb-2 text-xs sm:text-base"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
                         <div id="calendar-grid" class="grid grid-cols-7 gap-1 sm:gap-2"><p class="col-span-7 text-center">Carregando calendário...</p></div>
                     </div>
@@ -123,93 +123,65 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
-        const AIRTABLE_API_KEY = 'SEU_TOKEN_AQUI'; // <-- COLE SEU TOKEN AQUI
-        const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz'; 
-        const CADASTRO_TABLE_NAME = 'Cadastro';
-        const NOTICIAS_TABLE_NAME = 'Noticias';
-        const CALENDARIO_TABLE_NAME = 'Calendario';
-        const EMAIL_FIELD_NAME = 'email';
-        const NOME_FIELD_NAME = 'nome_completo';
-        const SALA_FIELD_NAME = 'sala';
-
+        let userToken = null; // A chave ficará guardada aqui após o login bem-sucedido
+        const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
         const loginSection = document.getElementById('login-section');
         const mainContent = document.getElementById('main-content');
         const loginForm = document.getElementById('login-form');
         const formMessage = document.getElementById('form-message');
         const submitButton = document.getElementById('submit-button');
-        const emailInput = document.getElementById('email-input');
-        const nomeInput = document.getElementById('nome-input');
-        const salaInput = document.getElementById('sala-input');
 
-        function showMainContent() {
+        function showMainContent(token) {
+            userToken = token;
             loginSection.classList.add('hidden');
             mainContent.classList.remove('hidden');
+            document.body.classList.remove('no-scroll');
             initializeSiteContent();
-            showWelcomePopup(); // <-- CHAMADA PARA A ANIMAÇÃO
+            showWelcomePopup();
         }
 
-        // --- FUNÇÃO DA ANIMAÇÃO ADICIONADA AQUI ---
         function showWelcomePopup() {
             const popup = document.getElementById('welcome-popup');
             if (!popup) return;
             popup.style.display = 'flex';
             popup.classList.add('animate-fade-in');
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 3000); // 3000 milissegundos = 3 segundos
+            setTimeout(() => { popup.style.display = 'none'; }, 3000);
         }
 
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const email = emailInput.value.trim().toLowerCase();
-            const nome = nomeInput.value.trim();
-            const sala = salaInput.value.trim();
-
-            if (!email || !nome || !sala) {
-                formMessage.textContent = 'Por favor, preencha todos os campos.';
-                formMessage.style.display = 'block';
-                return;
-            }
-
             submitButton.disabled = true;
             submitButton.textContent = 'Verificando...';
             formMessage.style.display = 'none';
 
-            const checkUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(CADASTRO_TABLE_NAME)}?filterByFormula=({${EMAIL_FIELD_NAME}} = '${email}')`;
+            const url = `/.netlify/functions/submit-form`;
+            const dataToSend = {
+                baseId: AIRTABLE_BASE_ID,
+                tableId: 'tblMhy6a1JaEV5Jbe',
+                tableName: 'Cadastro',
+                nome: document.getElementById('nome-input').value,
+                sala: document.getElementById('sala-input').value,
+                email: document.getElementById('email-input').value
+            };
 
             try {
-                const checkResponse = await fetch(checkUrl, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
-                if (!checkResponse.ok) {
-                    const errorData = await checkResponse.json();
-                    throw new Error(`Erro ao verificar: ${errorData.error.message || 'Verifique as chaves.'}`);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToSend)
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    throw new Error(result.error ? result.error.message : 'Ocorreu um erro.');
                 }
-                const checkData = await checkResponse.json();
-
-                if (checkData.records && checkData.records.length > 0) {
-                    formMessage.textContent = 'Login efetuado!';
-                    formMessage.style.display = 'block';
-                    setTimeout(showMainContent, 1000);
-                } else {
-                    const createUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(CADASTRO_TABLE_NAME)}`;
-                    const fieldsToCreate = { [EMAIL_FIELD_NAME]: email, [NOME_FIELD_NAME]: nome, [SALA_FIELD_NAME]: sala };
-                    const createResponse = await fetch(createUrl, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ "records": [{ "fields": fieldsToCreate }] })
-                    });
-                    if (!createResponse.ok) {
-                        const errorData = await createResponse.json();
-                        throw new Error(`Erro ao cadastrar: ${errorData.error.message || 'Verifique os nomes.'}`);
-                    }
-                    formMessage.textContent = 'Cadastro realizado!';
-                    formMessage.style.display = 'block';
-                    setTimeout(showMainContent, 1000);
-                }
-            } catch (error) {
-                formMessage.textContent = error.message;
+                formMessage.textContent = 'Sucesso! Carregando...';
+                formMessage.style.color = '#34d399';
                 formMessage.style.display = 'block';
-            } finally {
+                setTimeout(() => showMainContent(result.token), 1000);
+            } catch (error) {
+                formMessage.textContent = `Erro: ${error.message}`;
+                formMessage.style.color = '#f87171';
+                formMessage.style.display = 'block';
                 submitButton.disabled = false;
                 submitButton.textContent = 'Acessar';
             }
@@ -224,14 +196,8 @@
             const prevMonthButton = document.getElementById('prev-month');
             const nextMonthButton = document.getElementById('next-month');
 
-            if (prevMonthButton) prevMonthButton.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar(currentDate);
-            });
-            if (nextMonthButton) nextMonthButton.addEventListener('click', () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar(currentDate);
-            });
+            if (prevMonthButton) prevMonthButton.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
+            if (nextMonthButton) nextMonthButton.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
             
             renderNews();
             renderCalendar(currentDate);
@@ -240,36 +206,39 @@
 
         function renderNews() {
             const newsContainer = document.getElementById('news-container');
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${NOTICIAS_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc`;
-            fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } })
-                .then(res => res.json())
-                .then(data => {
-                    newsContainer.innerHTML = '';
-                    if (data.records) {
-                        data.records.forEach(record => {
-                            const post = record.fields;
-                            const postEl = document.createElement('article');
-                            postEl.className = 'glass-card rounded-xl overflow-hidden';
-                            postEl.innerHTML = `<div class="p-6"><div class="flex items-center text-sm text-slate-400 mb-3"><span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category || ''}</span><span class="mx-2">•</span><span>${post.date ? new Date(post.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : ''}</span></div><h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title || ''}</h3><p class="text-slate-300 font-light news-content">${(post.content || '').replace(/\n/g, '<br>')}</p></div>`;
-                            newsContainer.appendChild(postEl);
-                        });
-                    }
-                }).catch(err => {
-                    newsContainer.innerHTML = '<p class="text-red-500 font-bold">Falha ao carregar notícias.</p>';
-                });
+            if (!userToken) { newsContainer.innerHTML = '<p class="text-red-500">Falha de autenticação ao carregar notícias.</p>'; return; }
+            
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Noticias?sort%5B0%5D%5Bfield%5D=date&sort%5B0%5D%5Bdirection%5D=desc`;
+            fetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } })
+            .then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(data => {
+                newsContainer.innerHTML = '';
+                if(data.records) {
+                    data.records.forEach(record => {
+                        const post = record.fields;
+                        const postEl = document.createElement('article');
+                        postEl.className = 'glass-card rounded-xl overflow-hidden';
+                        postEl.innerHTML = `<div class="p-6"><div class="flex items-center text-sm text-slate-400 mb-3"><span class="bg-sky-500/20 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-full">${post.category || ''}</span><span class="mx-2">•</span><span>${post.date ? new Date(post.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : ''}</span></div><h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title || ''}</h3><p class="text-slate-300 font-light news-content">${(post.content || '').replace(/\n/g, '<br>')}</p></div>`;
+                        newsContainer.appendChild(postEl);
+                    });
+                }
+            }).catch(err => newsContainer.innerHTML = '<p class="text-red-500">Falha ao carregar notícias.</p>');
         }
-
+        
         async function renderCalendar(date) {
             const monthYearTitle = document.getElementById('month-year-title');
             const calendarGrid = document.getElementById('calendar-grid');
+            if (!userToken) return;
+            
             const year = date.getFullYear();
             const month = date.getMonth();
             monthYearTitle.textContent = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
             calendarGrid.innerHTML = `<p class="col-span-7 text-center">Carregando...</p>`;
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${CALENDARIO_TABLE_NAME}`;
+            
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Calendario`;
             let events = {};
             try {
-                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` } });
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } });
                 const data = await response.json();
                 if (data.records) {
                     data.records.forEach(record => {
@@ -282,6 +251,7 @@
                     });
                 }
             } catch (error) { console.error('Erro ao buscar eventos:', error); }
+            
             const firstDayOfMonth = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             calendarGrid.innerHTML = '';
