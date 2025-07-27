@@ -1,9 +1,12 @@
 exports.handler = async function(event) {
+  // Pega a chave secreta do cofre do Netlify
   const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
+  // Pega os dados que o formulário enviou
   const data = JSON.parse(event.body);
 
   const url = `https://api.airtable.com/v0/${data.baseId}/${data.tableId}`;
 
+  // Prepara os dados para enviar ao Airtable (com os nomes de coluna corretos)
   const dataToSend = {
     fields: {
       "nome_completo": data.nome,
