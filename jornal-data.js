@@ -7,6 +7,8 @@ const siteData = {
             "date": "2025-02-10",
             "content": "A professora Rita Herrera foi oficialmente anunciada como a professora representante da nossa turma, o 7°A Desidério. Com vasta experiência, ela trará novas perspectivas para nosso aprendizado."
         },
+
+
         {
             "id": 2,
             "title": "Ana Maria Alvares anunciada como nova diretora",
