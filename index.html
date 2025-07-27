@@ -187,14 +187,97 @@
         </footer>
     </div>
     
-    <script src="jornal-data.js"></script> 
-<script>
-    console.log("--- INICIANDO DIAGNÓSTICO ---");
-    if (typeof siteData !== 'undefined') {
-        console.log("%c SUCESSO: A variável 'siteData' foi encontrada!", "color: green; font-size: 16px; font-weight: bold;");
-        console.log("Conteúdo encontrado:", siteData);
-    } else {
-        console.error("%c FALHA: A variável 'siteData' NÃO foi encontrada!", "color: red; font-size: 16px; font-weight: bold;");
-    }
-    console.log("--- FIM DO DIAGNÓSTICO ---");
-</script>
+<script src="jornal-data.js"></script> 
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- CONSTANTES GLOBAIS ---
+        const loginSection = document.getElementById('login-section');
+        const mainContent = document.getElementById('main-content');
+        const loginForm = document.getElementById('login-form');
+        const submitButton = document.getElementById('submit-button');
+        const formMessage = document.getElementById('form-message');
+        const newsContainer = document.getElementById('news-container');
+        // Adicione outras constantes se precisar (menu, calendário, etc.)
+
+        // --- FUNÇÕES DE RENDERIZAÇÃO DE CONTEÚDO ---
+        function renderNews() {
+            // A verificação `typeof siteData` é a chave aqui
+            if (typeof siteData === 'undefined' || !siteData.noticias) {
+                if(newsContainer) newsContainer.innerHTML = '<p class="text-red-500">Erro ao carregar notícias.</p>';
+                return;
+            }
+            newsContainer.innerHTML = '';
+            siteData.noticias.slice().reverse().forEach(post => {
+                const postEl = document.createElement('article');
+                postEl.className = 'glass-card rounded-xl overflow-hidden';
+                // Adapte o conteúdo abaixo para o visual das suas notícias
+                postEl.innerHTML = `<div class="p-6">
+                    <h3 class="text-xl font-bold mb-3 text-white font-orbitron">${post.title}</h3>
+                    <p class="text-slate-300 font-light">${post.content}</p>
+                </div>`;
+                newsContainer.appendChild(postEl);
+            });
+        }
+
+        // Função de espera "paciente"
+        function initializeContent() {
+            if (typeof siteData !== 'undefined') {
+                renderNews();
+                // Chame aqui outras funções de renderização (calendário, horários)
+            } else {
+                // Se `siteData` não chegou, espera 100ms e tenta de novo
+                setTimeout(initializeContent, 100);
+            }
+        }
+
+        // --- LÓGICA DE LOGIN SEGURA ---
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+            formMessage.style.display = 'none';
+
+            const url = `/.netlify/functions/submit-form`;
+            const dataToSend = {
+                baseId: 'app3Z2bJrTyMK2hHz',
+                tableId: 'tblMhy6a1JaEV5Jbe',
+                nome: document.getElementById('nome-input').value,
+                sala: document.getElementById('sala-input').value,
+                email: document.getElementById('email-input').value
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToSend)
+                });
+
+                if (response.ok) { // SUCESSO!
+                    loginSection.classList.add('hidden');
+                    mainContent.classList.remove('hidden');
+                    document.body.classList.remove('no-scroll');
+                    window.scrollTo(0, 0);
+                    initializeContent(); // Inicia o carregamento do conteúdo
+                } else { // ERRO DA API
+                    const errorData = await response.json();
+                    let errorMessage = `Ocorreu um erro (${response.status}).`;
+                    if (errorData.error && errorData.error.message) errorMessage = errorData.error.message;
+                    formMessage.textContent = `Erro: ${errorMessage}`;
+                    formMessage.style.color = '#ef4444';
+                    formMessage.style.display = 'block';
+                }
+            } catch (error) { // ERRO DE REDE
+                formMessage.textContent = 'Erro de conexão. Verifique sua internet.';
+                formMessage.style.color = '#ef4444';
+                formMessage.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Acessar';
+            }
+        });
+    });
+    </script>
+    ```
+
