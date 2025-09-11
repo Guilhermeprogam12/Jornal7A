@@ -15,11 +15,12 @@
     <div class="w-full max-w-6xl mx-auto p-8 space-y-6 bg-slate-900/50 backdrop-blur-lg rounded-xl shadow-2xl border border-sky-400/20">
         <div class="text-center">
             <h1 class="font-orbitron text-3xl font-bold text-white">Central de Gerenciamento</h1>
+            <a href="/admin" class="text-sky-400 hover:text-sky-300 text-sm mt-2 inline-block">← Voltar para Criação de Notícias</a>
         </div>
         <div id="password-section" class="w-full max-w-sm mx-auto">
             <div class="space-y-4">
-                 <div><label for="username-input" class="text-sm font-bold text-slate-300 block mb-2">Usuário</label><input id="username-input" type="text" class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
-                <div><label for="password-input" class="text-sm font-bold text-slate-300 block mb-2">Senha</label><input id="password-input" type="password" class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                 <div><label for="username-input" class="text-sm font-bold text-slate-300 block mb-2">Usuário</label><input id="username-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                <div><label for="password-input" class="text-sm font-bold text-slate-300 block mb-2">Senha</label><input id="password-input" type="password" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
             </div>
             <button id="auth-button" class="mt-4 w-full font-bold py-3 px-4 bg-sky-600 hover:bg-sky-500 rounded-lg text-white">Acessar</button>
             <p id="auth-message" class="text-center text-red-500 mt-2" style="display: none;"></p>
@@ -27,10 +28,149 @@
         <div id="news-list-section" class="hidden"><div id="news-list" class="space-y-4"></div></div>
     </div>
     <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 hidden">
+        <div class="w-full max-w-2xl p-8 space-y-6 bg-slate-900 rounded-xl shadow-2xl border border-sky-400/20 relative">
+            <button id="close-modal" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
+            <h2 class="font-orbitron text-2xl font-bold text-white">Editar Notícia</h2>
+            <form id="edit-form" class="space-y-4">
+                <input type="hidden" id="edit-id-input">
+                <div><label for="edit-title-input" class="text-sm font-bold text-slate-300 block mb-2">Título</label><input id="edit-title-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                <div><label for="edit-category-input" class="text-sm font-bold text-slate-300 block mb-2">Categoria</label><input id="edit-category-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
+                <div><label for="edit-content-input" class="text-sm font-bold text-slate-300 block mb-2">Conteúdo</label><textarea id="edit-content-input" required rows="6" class="input-field w-full px-4 py-2 text-white rounded-lg"></textarea></div>
+                <p id="edit-form-message" class="text-center text-base" style="display: none;"></p>
+                <div class="pt-2"><button type="submit" id="save-button" class="w-full font-bold py-3 px-4 bg-yellow-500 hover:bg-yellow-400 rounded-lg text-white">Salvar Alterações</button></div>
+            </form>
         </div>
+    </div>
+
     <script>
-        const usernameInput = document.getElementById('username-input');
-        // ... (resto do script do gerenciar.html, que agora usará usernameInput.value junto com passwordInput.value nos fetches) ...
+        const passwordSection = document.getElementById('password-section');
+        const authButton = document.getElementById('auth-button');
+        const usernameInput = document.getElementById('username-input'); // Adicionado
+        const passwordInput = document.getElementById('password-input');
+        const authMessage = document.getElementById('auth-message');
+        const newsListSection = document.getElementById('news-list-section');
+        const newsList = document.getElementById('news-list');
+        const editModal = document.getElementById('edit-modal');
+        const closeModal = document.getElementById('close-modal');
+        const editForm = document.getElementById('edit-form');
+        const saveButton = document.getElementById('save-button');
+        const editFormMessage = document.getElementById('edit-form-message');
+
+        async function fetchNews() {
+            newsList.innerHTML = `<p class="text-center">Carregando notícias...</p>`;
+            try {
+                const response = await fetch('/.netlify/functions/manage-news', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'GET',
+                        username: usernameInput.value,
+                        password: passwordInput.value
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) { throw new Error(result.error.message); }
+                
+                newsList.innerHTML = '';
+                if (result.records.length === 0) {
+                    newsList.innerHTML = `<p class="text-center text-slate-400">Nenhuma notícia encontrada.</p>`;
+                }
+                result.records.forEach(record => {
+                    const post = document.createElement('div');
+                    post.className = 'bg-slate-800/50 p-4 rounded-lg flex justify-between items-center';
+                    post.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-lg text-white">${record.fields.title}</h3>
+                            <p class="text-sm text-slate-400">${record.fields.category || ''} - ${new Date(record.fields.date).toLocaleDateString('pt-BR')}</p>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="editNews('${record.id}')" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-1 px-3 rounded">Editar</button>
+                            <button onclick="deleteNews('${record.id}')" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-3 rounded">Excluir</button>
+                        </div>
+                    `;
+                    newsList.appendChild(post);
+                });
+
+            } catch (error) {
+                newsList.innerHTML = `<p class="text-red-500 text-center"><b>Erro:</b> ${error.message}</p>`;
+                passwordSection.style.display = 'block'; // Mostra a seção de senha de novo se falhar
+                newsListSection.classList.add('hidden');
+            }
+        }
+
+        authButton.addEventListener('click', async () => {
+            authMessage.style.display = 'none';
+            if (!passwordInput.value || !usernameInput.value) {
+                authMessage.textContent = 'Por favor, digite o usuário e a senha.';
+                authMessage.style.display = 'block';
+                return;
+            }
+            passwordSection.style.display = 'none';
+            newsListSection.classList.remove('hidden');
+            await fetchNews();
+        });
+
+        async function deleteNews(id) {
+            if (!confirm('Tem certeza que deseja excluir esta notícia? Esta ação não pode ser desfeita.')) return;
+            try {
+                const response = await fetch('/.netlify/functions/manage-news', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'DELETE',
+                        username: usernameInput.value,
+                        password: passwordInput.value,
+                        recordId: id
+                    })
+                });
+                if (!response.ok) { const result = await response.json(); throw new Error(result.error.message); }
+                alert('Notícia excluída com sucesso!');
+                await fetchNews();
+            } catch (error) { alert(`Erro ao excluir: ${error.message}`); }
+        }
+
+        async function editNews(id) {
+            editForm.reset(); editFormMessage.style.display = 'none';
+            try {
+                const response = await fetch('/.netlify/functions/manage-news', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'GET_ONE', username: usernameInput.value, password: passwordInput.value, recordId: id })
+                });
+                const result = await response.json();
+                if (!response.ok) { throw new Error(result.error.message); }
+                document.getElementById('edit-id-input').value = result.id;
+                document.getElementById('edit-title-input').value = result.fields.title || '';
+                document.getElementById('edit-category-input').value = result.fields.category || '';
+                document.getElementById('edit-content-input').value = result.fields.content || '';
+                editModal.classList.remove('hidden');
+            } catch (error) { alert(`Erro ao carregar dados para edição: ${error.message}`); }
+        }
+
+        closeModal.addEventListener('click', () => editModal.classList.add('hidden'));
+        editForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            saveButton.disabled = true; saveButton.textContent = 'Salvando...'; editFormMessage.style.display = 'none';
+            const dataToSave = { title: document.getElementById('edit-title-input').value, category: document.getElementById('edit-category-input').value, content: document.getElementById('edit-content-input').value };
+            try {
+                const response = await fetch('/.netlify/functions/manage-news', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'EDIT', username: usernameInput.value, password: passwordInput.value, recordId: document.getElementById('edit-id-input').value, data: dataToSave })
+                });
+                if (!response.ok) { const result = await response.json(); throw new Error(result.error.message); }
+                editFormMessage.textContent = 'Notícia atualizada com sucesso!'; editFormMessage.style.color = '#34d399';
+                await fetchNews();
+                setTimeout(() => editModal.classList.add('hidden'), 2000);
+            } catch (error) {
+                editFormMessage.textContent = `Erro: ${error.message}`;
+                editFormMessage.style.color = '#f87171';
+            } finally {
+                editFormMessage.style.display = 'block';
+                saveButton.disabled = false;
+                saveButton.textContent = 'Salvar Alterações';
+            }
+        });
     </script>
 </body>
 </html>
