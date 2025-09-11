@@ -46,7 +46,6 @@
                 <p class="text-slate-400">Faça seu login ou cadastre-se para continuar</p>
                 <button id="guest-login-top" class="text-sky-400 hover:text-sky-300 text-sm mt-2">Não sou estudante</button>
             </div>
-            
             <form id="login-form" class="space-y-4">
                 <div><label for="nome-input" class="text-sm font-bold text-slate-300 block mb-2">Nome Completo</label><input id="nome-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
                 <div><label for="sala-input" class="text-sm font-bold text-slate-300 block mb-2">Sua Sala</label><input id="sala-input" type="text" required class="input-field w-full px-4 py-2 text-white rounded-lg"></div>
@@ -54,14 +53,16 @@
                 <p id="form-message" class="text-center text-base" style="display: none;"></p>
                 <div class="pt-2"><button type="submit" id="submit-button" class="w-full font-bold py-3 px-4 bg-sky-600 hover:bg-sky-500 rounded-lg text-white">Acessar</button></div>
             </form>
-            <div class="text-center mt-4">
-                <button id="guest-login-bottom" class="text-slate-400 hover:text-white text-sm">Continuar sem login</button>
-            </div>
+            <div class="text-center mt-4"><button id="guest-login-bottom" class="text-slate-400 hover:text-white text-sm">Continuar sem login</button></div>
         </div>
     </div>
 
     <div id="main-content" class="hidden">
-        
+        <div id="welcome-popup" style="display: none;" class="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+            <div class="bg-slate-800 rounded-2xl shadow-2xl w-11/12 max-w-2xl p-4 relative border-2 border-sky-500/50 animate-fade-in">
+                <img src="volta-as-aulas.png" alt="Banner de Volta às Aulas" class="w-full rounded-xl animate-zoom-in">
+            </div>
+        </div>
         <header class="bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50 border-b border-sky-400/20">
             <div class="container mx-auto px-4">
                 <nav class="flex justify-between items-center py-4">
@@ -73,12 +74,10 @@
                 <div id="mobile-menu" class="hidden md:hidden py-4"><a href="#noticias" class="block text-slate-300 hover:text-sky-400 py-2">Notícias</a><a href="#calendario" class="block text-slate-300 hover:text-sky-400 py-2">Calendário</a><a href="#horarios" class="block text-slate-300 hover:text-sky-400 py-2">Horários</a><a href="#sobre-nos" class="block text-slate-300 hover:text-sky-400 py-2">Sobre Nós</a></div>
             </div>
         </header>
-
         <div class="fixed inset-0 -z-10 h-full w-full bg-slate-950">
             <div class="absolute bottom-0 left-[-20%] right-0 top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(255,0,182,.15),rgba(255,255,255,0))]"></div>
             <div class="absolute bottom-0 right-[-20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle_farthest-side,rgba(0,178,255,.15),rgba(255,255,255,0))]"></div>
         </div>
-
         <main class="container mx-auto px-4 py-8 md:py-12">
             <section class="text-center my-12 md:my-24"><h1 class="font-orbitron text-4xl md:text-7xl font-black text-white uppercase">Jornal 7ºA</h1><p class="text-lg md:text-xl mt-4 text-slate-300 max-w-2xl mx-auto">As últimas novidades, provas e tudo que acontece na nossa sala.</p></section>
             <section class="mb-16" id="noticias"><h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-sky-400 pl-4">TRANSMISSÕES RECENTES</h2><div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><p>Carregando notícias...</p></div></section>
@@ -104,13 +103,13 @@
                 <div class="text-center mb-12"><img src="https://img1.wsimg.com/isteam/ip/1e610df0-e515-4da6-b18d-190f69a9caec/WhatsApp%20Image%202025-02-22%20at%2010.15.09%20PM.jpeg/:/cr=t:0%25,l:0.37%25,w:99.26%25,h:100%25/rs=w:365,h:365,cg:true" alt="Foto da turma 7ºA" class="mx-auto rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-4 border-sky-400/40 shadow-xl shadow-sky-500/20"></div>
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-green-500 pl-4">SOBRE NÓS</h2>
                 <div class="glass-card rounded-xl p-6 md:p-8">
-                                    <p class="text-slate-300 font-light text-lg text-center leading-relaxed">Bem-vindo ao Jornal 7ºA! Este é o nosso canto no universo digital, criado para compartilhar as últimas novidades, eventos importantes e tudo o que acontece na nossa turma. Somos um grupo de estudantes explorando o mundo da comunicação e tecnologia, e este jornal é o nosso projeto.</p>
-                    <div class="mt-8 border-t border-sky-400/20 pt-6"><h3 class="font-orbitron text-2xl font-bold mb-4 text-white text-center">Sobre a Escola</h3><p class="text-slate-300 font-light text-lg text-center leading-relaxed">A Escola Municipal de Ensino Fundamental Professor Roberto Zanutto Desidério, em Sertãozinho-SP, foi fundada em 2010. Seu nome é uma homenagem a Roberto Zanutto Desidério, um importante diretor escolar em Sertãozinho entre 1958 e 1974, responsável por melhorias no Instituto de Educação Winston Churchill. A escola é reconhecida por seu ótimo e significativo desempenho comparado com outras escolas do município</p></div>
+                    <p class="text-slate-300 font-light text-lg text-center leading-relaxed">Bem-vindo ao Jornal 7ºA! ...</p>
+                    <div class="mt-8 border-t border-sky-400/20 pt-6"><h3 class="font-orbitron text-2xl font-bold mb-4 text-white text-center">Sobre a Escola</h3><p class="text-slate-300 font-light text-lg text-center leading-relaxed">A Escola Municipal de Ensino Fundamental Professor Roberto Zanutto Desidério...</p></div>
                 </div>
             </section>
             <section class="mb-16" id="confraternizacao">
                 <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
-                <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden">2024 Confraternização 2.mp4<video controls class="w-full rounded-lg"><source src="2024 Confraternização.mp4" type="video/mp4"></video></div>
+                <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden"><video controls class="w-full rounded-lg"><source src="2024 Confraternização.mp4" type="video/mp4"></video></div>
             </section>
         </main>
         <footer class="border-t border-sky-400/20 py-8">
@@ -120,7 +119,9 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const AIRTABLE_PUBLIC_READ_ONLY_KEY = 'patrlGDbrYlFVHsey.da4bd83ff14db29296d9bee21b3935f75eb07991a610d434b89d6c6e785f408a'; // <-- ⚠️ COLE A CHAVE SÓ DE LEITURA AQUI
+        // --- CHAVE PÚBLICA DE LEITURA-APENAS ---
+        const AIRTABLE_PUBLIC_READ_ONLY_KEY = 'COLE_A_CHAVE_DE_VISITANTE_AQUI'; // <-- ⚠️ COLE A CHAVE SÓ DE LEITURA
+        // ------------------------------------------
         let userToken = null;
         const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
 
@@ -138,6 +139,15 @@
             mainContent.classList.remove('hidden');
             document.body.classList.remove('no-scroll');
             initializeSiteContent();
+            showWelcomePopup();
+        }
+
+        function showWelcomePopup() {
+            const popup = document.getElementById('welcome-popup');
+            if (!popup) return;
+            popup.style.display = 'flex';
+            popup.classList.add('animate-fade-in');
+            setTimeout(() => { popup.style.display = 'none'; }, 3000);
         }
 
         function handleGuestLogin() {
