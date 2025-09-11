@@ -10,3 +10,9 @@
   from = "/gerenciar"
   to = "/gerenciar.html"
   status = 200
+
+# ADICIONE ESTA NOVA REGRA
+[[redirects]]
+  from = "/galeria"
+  to = "/galeria.html"
+  status = 200
