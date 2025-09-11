@@ -46,7 +46,9 @@
         </div>
     </div>
 
-    <script>
+<script>
+        console.log("--- 1. Script da página de gerenciamento INICIADO ---");
+
         const passwordSection = document.getElementById('password-section');
         const authButton = document.getElementById('auth-button');
         const passwordInput = document.getElementById('password-input');
@@ -56,80 +58,71 @@
         const editModal = document.getElementById('edit-modal');
         const closeModal = document.getElementById('close-modal');
         const editForm = document.getElementById('edit-form');
-        const saveButton = document.getElementById('save-button');
-        const editFormMessage = document.getElementById('edit-form-message');
 
-        async function fetchNews() { /* ... (a função fetchNews continua a mesma) ... */ }
-        authButton.addEventListener('click', async () => { /* ... (o evento do authButton continua o mesmo) ... */ });
-        async function deleteNews(id) { /* ... (a função deleteNews continua a mesma) ... */ }
+        if (authButton) {
+            console.log("--- 2. Botão 'Acessar' ENCONTRADO no HTML ---");
+        } else {
+            console.error("!!! FALHA CRÍTICA: Botão 'Acessar' (id='auth-button') NÃO foi encontrado no HTML! Verifique o código HTML.");
+        }
 
-        async function editNews(id) {
-            editForm.reset();
-            editFormMessage.style.display = 'none';
+        async function fetchNews() {
+            console.log("--- 4. Função fetchNews foi CHAMADA ---");
             try {
                 const response = await fetch('/.netlify/functions/manage-news', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'GET_ONE', password: passwordInput.value, recordId: id })
+                    body: JSON.stringify({ action: 'GET', password: passwordInput.value })
                 });
                 const result = await response.json();
                 if (!response.ok) { throw new Error(result.error.message); }
                 
-                document.getElementById('edit-id-input').value = result.id;
-                document.getElementById('edit-title-input').value = result.fields.title || '';
-                document.getElementById('edit-category-input').value = result.fields.category || '';
-                document.getElementById('edit-content-input').value = result.fields.content || '';
+                console.log("--- 5. Notícias recebidas do Airtable com SUCESSO ---", result.records);
+                newsList.innerHTML = '';
+                result.records.forEach(record => {
+                    const post = document.createElement('div');
+                    post.className = 'bg-slate-800/50 p-4 rounded-lg flex justify-between items-center';
+                    post.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-lg text-white">${record.fields.title}</h3>
+                            <p class="text-sm text-slate-400">${record.fields.category} - ${new Date(record.fields.date).toLocaleDateString('pt-BR')}</p>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="editNews('${record.id}')" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-1 px-3 rounded">Editar</button>
+                            <button onclick="deleteNews('${record.id}')" class="bg-red-600 hover:bg-red-500 text-white font-bold py-1 px-3 rounded">Excluir</button>
+                        </div>
+                    `;
+                    newsList.appendChild(post);
+                });
 
-                editModal.classList.remove('hidden');
             } catch (error) {
-                alert(`Erro ao carregar dados para edição: ${error.message}`);
+                console.error("!!! FALHA em fetchNews:", error);
+                newsList.innerHTML = `<p class="text-red-500 text-center">${error.message}</p>`;
             }
         }
 
-        closeModal.addEventListener('click', () => editModal.classList.add('hidden'));
-
-        editForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            saveButton.disabled = true;
-            saveButton.textContent = 'Salvando...';
-            editFormMessage.style.display = 'none';
-
-            const dataToSave = {
-                title: document.getElementById('edit-title-input').value,
-                category: document.getElementById('edit-category-input').value,
-                content: document.getElementById('edit-content-input').value
-            };
-
-            try {
-                const response = await fetch('/.netlify/functions/manage-news', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'EDIT',
-                        password: passwordInput.value,
-                        recordId: document.getElementById('edit-id-input').value,
-                        data: dataToSave
-                    })
-                });
-                if (!response.ok) { 
-                    const result = await response.json();
-                    throw new Error(result.error.message);
-                }
-                editFormMessage.textContent = 'Notícia atualizada com sucesso!';
-                editFormMessage.style.color = '#34d399';
-                await fetchNews(); // Atualiza a lista de notícias
-                setTimeout(() => editModal.classList.add('hidden'), 2000);
-            } catch (error) {
-                editFormMessage.textContent = `Erro: ${error.message}`;
-                editFormMessage.style.color = '#f87171';
-            } finally {
-                editFormMessage.style.display = 'block';
-                saveButton.disabled = false;
-                saveButton.textContent = 'Salvar Alterações';
-            }
+        authButton.addEventListener('click', async () => {
+            console.log("--- 3. Botão 'Acessar' foi CLICADO ---");
+            authMessage.style.display = 'none';
+            passwordSection.style.display = 'none';
+            newsListSection.classList.remove('hidden');
+            await fetchNews();
         });
+
+        function deleteNews(id) {
+            console.log(`Função deleteNews chamada para o ID: ${id}`);
+            // A lógica de exclusão que você já tinha aqui...
+            if (!confirm('Tem certeza?')) return;
+            // ...fetch para deletar...
+        }
+
+        function editNews(id) {
+            console.log(`Função editNews chamada para o ID: ${id}`);
+            // A lógica de edição que você já tinha aqui...
+        }
         
-        // Cole as funções fetchNews e deleteNews completas aqui, como estavam antes
+        if(closeModal) closeModal.addEventListener('click', () => editModal.classList.add('hidden'));
+        if(editForm) editForm.addEventListener('submit', async function(event) { /* ... Lógica do form de edição ... */ });
+
     </script>
 </body>
 </html>
