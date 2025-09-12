@@ -10,14 +10,8 @@
     <style>
         body { font-family: 'Exo 2', sans-serif; background-color: #410f87; color: #d1d5db; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .gallery-item {
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .gallery-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
-        }
+        .gallery-item { cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .gallery-item:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -38,7 +32,6 @@
             const galleryContainer = document.getElementById('gallery-container');
             
             try {
-                // Chama o "cofre" seguro para buscar as fotos
                 const response = await fetch('/.netlify/functions/get-gallery');
                 const result = await response.json();
 
@@ -46,7 +39,7 @@
                     throw new Error(result.error ? result.error.message : 'Falha ao carregar a galeria.');
                 }
                 
-                galleryContainer.innerHTML = ''; // Limpa a mensagem "Carregando..."
+                galleryContainer.innerHTML = '';
 
                 if(!result.records || result.records.length === 0) {
                     galleryContainer.innerHTML = '<p class="text-center col-span-full text-slate-400">Nenhuma foto encontrada na galeria.</p>';
@@ -59,12 +52,14 @@
                     const caption = fields['A Legenda'] || 'Foto da galeria';
 
                     if (photo) {
+                        // --- CORREÇÃO APLICADA AQUI ---
+                        const imageUrl = (photo.thumbnails && photo.thumbnails.large) ? photo.thumbnails.large.url : photo.url;
+
                         const galleryItem = document.createElement('div');
                         galleryItem.className = 'gallery-item bg-slate-800/50 rounded-lg overflow-hidden border border-sky-400/20';
-                        // Abre a imagem em uma nova aba ao clicar
                         galleryItem.onclick = () => window.open(photo.url, '_blank');
                         galleryItem.innerHTML = `
-                            <img src="${photo.thumbnails.large.url}" alt="${caption}" class="w-full h-64 object-cover">
+                            <img src="${imageUrl}" alt="${caption}" class="w-full h-64 object-cover">
                             <div class="p-4">
                                 <p class="text-white truncate">${caption}</p>
                             </div>
