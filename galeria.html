@@ -27,7 +27,7 @@
                 const fields = record.fields;
                 // CORREÇÃO AQUI: Usando 'Attachments' e 'A Legenda'
                 const photo = fields.Attachments && fields.Attachments.length > 0 ? fields.Attachments[0] : null;
-                const caption = fields['A Legenda'] || 'Foto da galeria'; // Usamos colchetes por causa do espaço
+                const caption = fields['Legenda'] || 'Attachments'; // Usamos colchetes por causa do espaço
 
                 if (photo) {
                     const galleryItem = document.createElement('div');
