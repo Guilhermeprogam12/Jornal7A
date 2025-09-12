@@ -104,9 +104,12 @@
                     <div class="mt-8 border-t border-sky-400/20 pt-6"><h3 class="font-orbitron text-2xl font-bold mb-4 text-white text-center">Sobre a Escola</h3><p class="text-slate-300 font-light text-lg text-center leading-relaxed">A Escola Municipal de Ensino Fundamental Professor Roberto Zanutto Desidério...</p></div>
                 </div>
             </section>
-            <section class="mb-16" id="confraternizacao">
-                <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-emerald-500 pl-4">CONFRATERNIZAÇÃO</h2>
-                <div class="glass-card rounded-xl p-4 md:p-6 overflow-hidden"><video controls class="w-full rounded-lg"><source src="2024 Confraternização.mp4" type="video/mp4"></video></div>
+            <section class="mb-16" id="galeria">
+                <h2 class="font-orbitron text-3xl font-bold mb-8 text-white border-l-4 border-teal-400 pl-4">GALERIA DE FOTOS</h2>
+                <div id="gallery-preview-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                <div class="text-center mt-8">
+                    <a href="/galeria" class="inline-block font-bold py-3 px-6 bg-sky-600 hover:bg-sky-500 rounded-lg text-white transition-all duration-300">Ver Galeria Completa</a>
+                </div>
             </section>
         </main>
         <footer class="border-t border-sky-400/20 py-8">
@@ -117,7 +120,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- CHAVE PÚBLICA DE LEITURA-APENAS ---
-        const AIRTABLE_PUBLIC_READ_ONLY_KEY = 'patrlGDbrYlFVHsey.61752f4740388288a8a1b37583089ff87d6f695c95f2490e5a841888b54490b6'; // <-- ⚠️ COLE A CHAVE SÓ DE LEITURA
+        const AIRTABLE_PUBLIC_READ_ONLY_KEY = 'patrlGDbrYlFVHsey.61752f4740388288a8a1b37583089ff87d6f695c95f2490e5a841888b54490b6';
         // ------------------------------------------
         let userToken = null;
         const AIRTABLE_BASE_ID = 'app3Z2bJrTyMK2hHz';
@@ -191,6 +194,7 @@
             renderNews();
             renderCalendar(currentDate);
             renderTimetable();
+            renderGalleryPreview(); // Adicionado para carregar a prévia da galeria
         }
 
         function renderNews() {
@@ -262,6 +266,40 @@
                 rowEl.className = "border-b border-slate-800 hover:bg-sky-400/5";
                 rowEl.innerHTML = `<td class="py-3 px-4 font-bold text-white">${row.horario}</td><td>${row.segunda}</td><td>${row.terca}</td><td>${row.quarta}</td><td>${row.quinta}</td><td>${row.sexta}</td>`;
                 timetableBody.appendChild(rowEl);
+            });
+        }
+
+        function renderGalleryPreview() {
+            const galleryContainer = document.getElementById('gallery-preview-container');
+            const keyToUse = userToken || AIRTABLE_PUBLIC_READ_ONLY_KEY;
+
+            if (!keyToUse || !galleryContainer) { return; }
+            
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Galeria?maxRecords=4&sort%5B0%5D%5Bfield%5D=Created&sort%5B0%5D%5Bdirection%5D=desc`;
+
+            fetch(url, { headers: { 'Authorization': `Bearer ${keyToUse}` } })
+            .then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(data => {
+                galleryContainer.innerHTML = '';
+                if(data.records && data.records.length > 0) {
+                    data.records.forEach(record => {
+                        const fields = record.fields;
+                        const photo = fields.Attachments && fields.Attachments.length > 0 ? fields.Attachments[0] : null;
+                        const caption = fields['Legenda'] || '';
+
+                        if(photo) {
+                            const item = document.createElement('a');
+                            item.href = '/galeria';
+                            item.className = 'block rounded-lg overflow-hidden border-2 border-transparent hover:border-sky-400 transition-all duration-300';
+                            item.innerHTML = `<img src="${photo.thumbnails.large.url}" alt="${caption}" class="w-full h-48 object-cover">`;
+                            galleryContainer.appendChild(item);
+                        }
+                    });
+                } else {
+                    galleryContainer.innerHTML = '<p class="text-slate-400 text-center col-span-full">Nenhuma foto na galeria ainda.</p>';
+                }
+            }).catch(err => {
+                galleryContainer.innerHTML = '<p class="text-red-500 text-center col-span-full">Falha ao carregar prévia da galeria.</p>';
             });
         }
     });
