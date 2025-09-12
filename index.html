@@ -269,42 +269,42 @@
             });
         }
 
-        function renderGalleryPreview() {
-            const galleryContainer = document.getElementById('gallery-preview-container');
-            const keyToUse = userToken || AIRTABLE_PUBLIC_READ_ONLY_KEY;
-            if (!keyToUse || !galleryContainer) { return; }
-            
-            // CORREÇÃO: Removido o parâmetro de sort que causava o erro 422
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Galeria?maxRecords=4`;
+function renderGalleryPreview() {
+    const galleryContainer = document.getElementById('gallery-preview-container');
+    const keyToUse = userToken || AIRTABLE_PUBLIC_READ_ONLY_KEY;
+    if (!keyToUse || !galleryContainer) { return; }
+    
+    const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Galeria?maxRecords=4`;
 
-            fetch(url, { headers: { 'Authorization': `Bearer ${keyToUse}` } })
-            .then(res => res.ok ? res.json() : Promise.reject(res))
-            .then(data => {
-                galleryContainer.innerHTML = '';
-                if(data.records && data.records.length > 0) {
-                    data.records.forEach(record => {
-                        const fields = record.fields;
-                        // CORREÇÃO: Usando 'Attachments' e 'A Legenda'
-                        const photo = fields.Attachments && fields.Attachments.length > 0 ? fields.Attachments[0] : null;
-                        const caption = fields['A Legenda'] || '';
+    fetch(url, { headers: { 'Authorization': `Bearer ${keyToUse}` } })
+    .then(res => res.ok ? res.json() : Promise.reject(res))
+    .then(data => {
+        galleryContainer.innerHTML = '';
+        if(data.records && data.records.length > 0) {
+            data.records.forEach(record => {
+                const fields = record.fields;
+                const photo = fields.Attachments && fields.Attachments.length > 0 ? fields.Attachments[0] : null;
+                const caption = fields['A Legenda'] || '';
 
-                        if(photo) {
-                            const item = document.createElement('a');
-                            item.href = '/galeria';
-                            item.className = 'block rounded-lg overflow-hidden border-2 border-transparent hover:border-sky-400 transition-all duration-300';
-                            item.innerHTML = `<img src="${photo.thumbnails.large.url}" alt="${caption}" class="w-full h-48 object-cover">`;
-                            galleryContainer.appendChild(item);
-                        }
-                    });
-                } else {
-                    galleryContainer.innerHTML = '<p class="text-slate-400 text-center col-span-full">Nenhuma foto na galeria ainda.</p>';
+                if(photo) {
+                    // --- CORREÇÃO APLICADA AQUI ---
+                    const imageUrl = (photo.thumbnails && photo.thumbnails.large) ? photo.thumbnails.large.url : photo.url;
+
+                    const item = document.createElement('a');
+                    item.href = '/galeria';
+                    item.className = 'block rounded-lg overflow-hidden border-2 border-transparent hover:border-sky-400 transition-all duration-300';
+                    item.innerHTML = `<img src="${imageUrl}" alt="${caption}" class="w-full h-48 object-cover">`;
+                    galleryContainer.appendChild(item);
                 }
-            }).catch(err => {
-                console.error("Erro ao carregar prévia da galeria:", err);
-                galleryContainer.innerHTML = '<p class="text-red-500 text-center col-span-full">Falha ao carregar prévia da galeria.</p>';
             });
+        } else {
+            galleryContainer.innerHTML = '<p class="text-slate-400 text-center col-span-full">Nenhuma foto na galeria ainda.</p>';
         }
+    }).catch(err => {
+        console.error("Erro ao carregar prévia da galeria:", err);
+        galleryContainer.innerHTML = '<p class="text-red-500 text-center col-span-full">Falha ao carregar prévia da galeria.</p>';
     });
+}
     </script>
 </body>
 </html>
