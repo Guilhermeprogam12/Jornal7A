@@ -1,13 +1,17 @@
 const fetch = require('node-fetch');
 
 exports.handler = async function(event) {
-  // Pega a chave secreta de LEITURA-APENAS do cofre do Netlify
+  // Pega a chave de visitante do cofre do Netlify
   const AIRTABLE_READ_ONLY_KEY = process.env.AIRTABLE_READ_ONLY_KEY;
   const BASE_ID = 'app3Z2bJrTyMK2hHz';
   const TABLE_NAME = 'Galeria';
 
+  // Se a chave não estiver no cofre, retorna um erro
   if (!AIRTABLE_READ_ONLY_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: { message: "Chave da API de leitura não configurada no servidor." } }) };
+    return { 
+      statusCode: 500, 
+      body: JSON.stringify({ error: { message: "Chave da API de leitura não configurada no servidor." } }) 
+    };
   }
   
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`;
