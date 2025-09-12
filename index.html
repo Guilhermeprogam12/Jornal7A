@@ -194,7 +194,7 @@
             renderNews();
             renderCalendar(currentDate);
             renderTimetable();
-            renderGalleryPreview(); // Adicionado para carregar a prévia da galeria
+            renderGalleryPreview();
         }
 
         function renderNews() {
@@ -272,10 +272,10 @@
         function renderGalleryPreview() {
             const galleryContainer = document.getElementById('gallery-preview-container');
             const keyToUse = userToken || AIRTABLE_PUBLIC_READ_ONLY_KEY;
-
             if (!keyToUse || !galleryContainer) { return; }
             
-            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Galeria?maxRecords=4&sort%5B0%5D%5Bfield%5D=Created&sort%5B0%5D%5Bdirection%5D=desc`;
+            // CORREÇÃO: Removido o parâmetro de sort que causava o erro 422
+            const url = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/Galeria?maxRecords=4`;
 
             fetch(url, { headers: { 'Authorization': `Bearer ${keyToUse}` } })
             .then(res => res.ok ? res.json() : Promise.reject(res))
@@ -284,8 +284,9 @@
                 if(data.records && data.records.length > 0) {
                     data.records.forEach(record => {
                         const fields = record.fields;
+                        // CORREÇÃO: Usando 'Attachments' e 'A Legenda'
                         const photo = fields.Attachments && fields.Attachments.length > 0 ? fields.Attachments[0] : null;
-                        const caption = fields['Legenda'] || '';
+                        const caption = fields['A Legenda'] || '';
 
                         if(photo) {
                             const item = document.createElement('a');
@@ -299,6 +300,7 @@
                     galleryContainer.innerHTML = '<p class="text-slate-400 text-center col-span-full">Nenhuma foto na galeria ainda.</p>';
                 }
             }).catch(err => {
+                console.error("Erro ao carregar prévia da galeria:", err);
                 galleryContainer.innerHTML = '<p class="text-red-500 text-center col-span-full">Falha ao carregar prévia da galeria.</p>';
             });
         }
