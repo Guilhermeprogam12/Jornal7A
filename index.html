@@ -236,7 +236,7 @@
             renderGalleryPreview();
 
             const videoWrapper = document.querySelector('.video-wrapper');
-            const videoElement = document.getElementById('2024 Confraternização 2.mp4');
+            const videoElement = document.getElementById('confraternizacao-video');
             if (videoWrapper && videoElement) {
                 videoWrapper.addEventListener('click', () => {
                     videoElement.controls = true;
@@ -264,7 +264,7 @@
             }).catch(err => newsContainer.innerHTML = '<p class="text-red-500">Falha ao carregar notícias.</p>');
         }
         
- async function renderCalendar(date) {
+        async function renderCalendar(date) {
             const monthYearTitle = document.getElementById('month-year-title');
             const calendarGrid = document.getElementById('calendar-grid');
             if (!userToken) return;
@@ -298,6 +298,7 @@
                 calendarGrid.insertAdjacentHTML('beforeend', `<div class="text-center h-28 p-2 relative"><div class="${dayClasses}">${day}</div>${dayLabel}</div>`);
             }
         }
+        
         function renderTimetable() {
             const timetableBody = document.getElementById('timetable-body');
             if (!timetableBody) return;
